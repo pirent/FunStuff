@@ -1,16 +1,12 @@
-package searchnsort;
+package searchnsort.search;
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-import searchnsort.search.BinarySearchAlgorithm;
-import searchnsort.search.LinearSearchAlgorithm;
-import searchnsort.search.SearchAlgorithm;
-import searchnsort.search.SearchAlgorithmType;
 import util.ScannerUtil;
 
-public class SeachAndSortTheApp {
+public class SeachTheApp {
 	
 	private static final Random generator = new Random();
 	private static int[] data;
