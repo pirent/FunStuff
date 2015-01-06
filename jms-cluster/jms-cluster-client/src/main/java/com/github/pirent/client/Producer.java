@@ -32,7 +32,7 @@ public class Producer {
 
 		JndiLookup jndiLookup = new JndiLookup(ip, port, user, password);
 		connectionFactory = jndiLookup.lookup(ConnectionFactory.class, "jms/RemoteConnectionFactory");
-		queue = jndiLookup.lookup(Queue.class, "jms/queue/Test");
+		queue = jndiLookup.lookup(Queue.class, "jms/queue/test");
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -69,6 +69,7 @@ public class Producer {
 
 				@Override
 				public void onException(JMSException exception) {
+					System.err.println("Connection has exception while listening: ");
 					exception.printStackTrace();
 				}
 
@@ -100,6 +101,7 @@ public class Producer {
 				}
 			}
 			catch (JMSException e) {
+				System.err.println("Exception when cleaning producer's resources: ");
 				e.printStackTrace();
 			}
 		}

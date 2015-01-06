@@ -22,6 +22,7 @@ public class ExampleMDB implements MessageListener {
 				System.out.println("--------------------");
 			}
 			catch (JMSException e) {
+				System.err.println("Exception while handling message at server");
 				e.printStackTrace();
 			}
 		} else {
