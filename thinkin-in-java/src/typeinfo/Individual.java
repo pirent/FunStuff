@@ -17,6 +17,6 @@ public abstract class Individual {
 	@Override
 	public String toString() {
 		// TODO
-		return super.toString();
+		return this.getClass().getSimpleName();
 	}
 }
