@@ -10,6 +10,7 @@
   <modules>
   	<module>searchnsort</module>
   	<module>util</module>
+  	<module>thinkin-in-java</module>
     <module>test-support</module>
   </modules>
 </project>
