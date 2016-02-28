@@ -1,8 +1,13 @@
 package typeinfo;
 
+import java.util.Random;
+
 public abstract class Individual {
 
+	private Random rand = new Random();
 	private String name;
+	private int id = rand.nextInt(20);
+	
 	
 	public Individual() {}
 	
@@ -10,8 +15,9 @@ public abstract class Individual {
 		this.name = name;
 	}
 	
-	public void id() {
+	public int id() {
 		// TODO
+		return id;
 	};
 	
 	@Override
