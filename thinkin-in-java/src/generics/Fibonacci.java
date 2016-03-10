@@ -5,7 +5,10 @@ import util.Generator;
 /**
  * Usage: calling this class' next() method inside a loop with a predefined
  * length of how far you want to dive in fibonacci numbers
- * 
+ * <br>
+ * Algorithm:
+ * 	+ When next() is called, calculate the current number based on value of 'count'. 
+ *  + Increase the value of 'count' by 1 after every next() call
  * @author pirent
  *
  */
