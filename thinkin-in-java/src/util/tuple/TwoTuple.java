@@ -1,4 +1,4 @@
-package util;
+package util.tuple;
 
 /**
  * A group of objects wrapped together into a single object. The recipient of

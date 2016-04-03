@@ -1,4 +1,4 @@
-package util;
+package util.tuple;
 
 public class FiveTuple<A, B, C, D, E> extends FourTuple<A, B, C, D> {
 	public final E fifth;
