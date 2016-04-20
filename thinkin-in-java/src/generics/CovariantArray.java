@@ -14,7 +14,7 @@ class Orange extends Fruit {
 
 /*
  * Demo a particular behavior of arrays: You can assign an array of derived type
- * to an array reference of base type
+ * to an array reference of base type (upcast)
  */
 public class CovariantArray {
 	public static void main(String[] args) {
