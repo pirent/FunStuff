@@ -19,7 +19,7 @@ public class AsListInference {
 		List<Snow> snow1 = Arrays.asList(new Crustly(), new Powder(), new Slush());
 		
 		// Won't compile
-		List<Snow> snow2 = Arrays.asList(new Light(), new Heavy());
+//		List<Snow> snow2 = Arrays.asList(new Light(), new Heavy());
 		
 		// Collections.addAll() doesn't get confused
 		List<Snow> snow3 = new ArrayList<Snow>();
