@@ -13,8 +13,9 @@ public class GeneratorsTest {
 			try {
 				Generator<?> generator = (Generator<?>) type.newInstance();
 				for (int i = 0; i < size; i++) {
-					System.out.print(generator.next( + " "));
+					System.out.print(generator.next() + " ");
 				}
+				System.out.println();
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
