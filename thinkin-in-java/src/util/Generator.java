@@ -10,5 +10,11 @@ package util;
  * @param <T>
  */
 public interface Generator<T> {
+	
+	/**
+	 * Generate a new instance of a specific type.
+	 * 
+	 * @return
+	 */
 	T next();
 }

@@ -35,7 +35,10 @@ public class CountingGenerator {
 		
 	}
 	
-	private static char[] chars = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	/**
+	 * Include a-z and A-Z
+	 */
+	static char[] chars = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 			.toCharArray();
 	
 	/**
@@ -62,7 +65,7 @@ public class CountingGenerator {
 		 * because it can be replaced with other generator with different purpose
 		 * e.g., for generating random string
 		 */
-		private Generator<java.lang.Character> characterGenerator = new Character();
+		protected Generator<java.lang.Character> characterGenerator = new Character();
 		
 		public String() {}
 		
