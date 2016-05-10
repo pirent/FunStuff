@@ -17,6 +17,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
+ * A Map of the countries in the world and their capitals.
+ * <br>
  * "Flyweight" {@link Map} and {@link List} of sample data.
  * 
  * @author pirent
@@ -156,8 +158,24 @@ public class Countries {
 		{"URUGUAY","Montevideo"}, {"VENEZUELA","Caracas"},
 	};
 	
+	/*
+	 * ==================================================================================
+	 * This fly-weight map must implements the entrySet() method which requires:
+	 *  + a custom Set implementation
+	 *  + a custom Map.Entry class
+	 *  ==================================================================================
+	 */
 	private static class FlyweightMap extends AbstractMap<String, String> {
 
+		/**
+		 * Custom implementation of {@link Map.Entry}.
+		 * <br>
+		 * Each Map.Entry object simple stores its index, rather than the actual key and value.
+		 * When you call {@link #getKey()} or {@link #getValue()}, it uses the index to return
+		 * the appropriate DATA element.
+		 * <br>
+		 * Mostly all methods in this implementation relies on the key (name of the country)
+		 */
 		private static class Entry implements java.util.Map.Entry<String, String> {
 
 			private int index;
@@ -168,6 +186,7 @@ public class Countries {
 			
 			@Override
 			public boolean equals(Object other) {
+				// Use the key (name of the country) to compare
 				return DATA[index][0].equals(other);
 			}
 			
@@ -193,10 +212,16 @@ public class Countries {
 			
 		}
 		
+		/**
+		 * Custom implementation for a {@link Map}'s entry set.
+		 */
 		static class EntrySet extends AbstractSet<java.util.Map.Entry<String, String>> {
 
 			private int size;
 			
+			/*
+			 * This ensure that size of set of entries is no bigger than DATA.
+			 */
 			EntrySet(int size) {
 				if (size < 0) {
 					this.size = 0;
@@ -221,7 +246,16 @@ public class Countries {
 			}
 			
 			private class Iter implements Iterator<java.util.Map.Entry<String, String>> {
-
+				
+				/*
+				 * Instead of creating a Map.Entry object for each data pair in DATA,
+				 * there's only one Map.Entry object per iterator.
+				 */
+				
+				/**
+				 * This {@link Entry} object is used as a window into the data;
+				 * it only contains an idex into the static array of strings (i.e., DATA)
+				 */
 				private Entry entry = new Entry(-1);
 				
 				@Override
@@ -229,6 +263,11 @@ public class Countries {
 					return entry.index < size - 1;
 				}
 
+				/**
+				 * Every time this method is call for the iterator, the index
+				 * in the Entry is incremented so that it points the next elements pair,
+				 * and the that Iterator's single Entry object is returned from this.
+				 */
 				@Override
 				public java.util.Map.Entry<String, String> next() {
 					entry.index++;
@@ -255,7 +294,8 @@ public class Countries {
 	// ========================================================== ||
 	
 	/**
-	 * Create a partial map of countries with specific size.
+	 * Produces a {@link FlyweightMap} containing an {@link EntrySet}
+	 * of the desired size.
 	 * 
 	 * @param size
 	 * @return
@@ -273,10 +313,21 @@ public class Countries {
 	
 	static Map<String, String> map = new FlyweightMap();
 	
+	/**
+	 * Produces a {@link Map} of countries and capitals.
+	 * 
+	 * @return
+	 */
 	public static Map<String, String> capitals() {
 		return map;	// entire map
 	}
 	
+	/**
+	 * Works like {@link #capitals()} but with a number of capitals.
+	 * 
+	 * @param size number of country's capitals to be displayed
+	 * @return
+	 */
 	public static Map<String, String> capitals(int size) {
 		return select(size);
 	}
@@ -285,10 +336,21 @@ public class Countries {
 	
 	static List<String> names = new ArrayList<String>(map.keySet());
 	
+	/**
+	 * Produces a {@link List} of the country names.
+	 * 
+	 * @return
+	 */
 	public static List<String> names() {
 		return names;	// All country names
 	}
 	
+	/**
+	 * Produces a partial {@link List} of the country names.
+	 * 
+	 * @param size
+	 * @return
+	 */
 	public static List<String> names(int size) {
 		// A partial list
 		return new ArrayList<String>(select(size).keySet());
