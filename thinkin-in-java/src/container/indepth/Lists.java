@@ -38,7 +38,7 @@ public class Lists {
 		// Must move to an element after remove
 		it.next();
 		
-		// Change the lement after the deleted one
+		// Change the element after the deleted one
 		it.set("47");
 	}
 	
@@ -47,7 +47,7 @@ public class Lists {
 	// ========================================================== ||
 	public static void testVisual(List<String> a) {
 		System.out.println("a = " + a);
-		List<String> b = Countries.names(25);
+		List<String> b = Countries.names(3);
 		System.out.println("b = " + b);
 		
 		a.addAll(b);
@@ -81,7 +81,7 @@ public class Lists {
 	// ========================================================== ||
 	public static void testLinkedList() {
 		LinkedList<String> ll = new LinkedList<String>();
-		ll.addAll(Countries.names(25));
+		ll.addAll(Countries.names(3));
 		System.out.println("Something with linked list");
 		System.out.println(ll);
 		
@@ -103,10 +103,10 @@ public class Lists {
 	}
 	
 	public static void main(String[] args) {
-		iterManipulation(new LinkedList<String>(Countries.names(25)));
-		iterManipulation(new ArrayList<String>(Countries.names(25)));
+		iterManipulation(new LinkedList<String>(Countries.names(3)));
+		iterManipulation(new ArrayList<String>(Countries.names(3)));
 		
-		testVisual(new LinkedList<String>(Countries.names(25)));
+		testVisual(new LinkedList<String>(Countries.names(3)));
 		
 		testLinkedList();
 	}
