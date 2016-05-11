@@ -24,10 +24,13 @@ class SimpleList<T> {
 	private Node<T> header;
 	
 	private static class Node<T> {
+		private static long counter;
+		private final long id;
 		private T element;
 		private Node<T> nextNode;
 		
 		public Node(T element, Node<T> nextNode) {
+			this.id = counter++;
 			this.element = element;
 			this.nextNode = nextNode;
 		}
@@ -47,6 +50,13 @@ class SimpleList<T> {
 		public void setNextNode(Node<T> nextNode) {
 			this.nextNode = nextNode;
 		}
+
+		@Override
+		public String toString() {
+			String nextNodeDesc = nextNode != null ? nextNode.id + "-" + nextNode.getElement() : null;
+			return "Node(" + id + "): " + element.toString() + ", next: " + nextNodeDesc;
+		}
+		
 	}
 
 	private static class SimpleListIterator<T> {
@@ -69,18 +79,23 @@ class SimpleList<T> {
 			else {
 				Node<T> newNode = new Node<T>(element, null);
 				list.current.setNextNode(newNode);
+				list.current = newNode;
 			}
 			list.size++;
 		}
 		
 		public T next() {
-			T result;
-			if (index == 0) {
-				list.current = list.header;
+			if (list.header == null) {
+				return null;
 			}
-			result = list.current.getElement();
+			T result;
+			Node<T> traverseNode = list.header;
+			
+			for (int i = 0; i < index; i++) {
+				traverseNode = traverseNode.getNextNode();
+			}
+			result = traverseNode.getElement();
 			index++;
-			list.current = list.current.nextNode;
 			
 			return result;
 		}
@@ -89,14 +104,14 @@ class SimpleList<T> {
 	
 	@Override
 	public String toString() {
-//		StringBuilder result = new StringBuilder();
-//		SimpleListIterator<T> iterator = iterator();
-//		while (iterator.hasNext()) {
-//			T next = iterator.next();
-//			result.append(next).append(" ");
-//		}
-//		return result.toString();
-		return "abc";
+		StringBuilder result = new StringBuilder();
+		SimpleListIterator<T> iterator = iterator();
+		while (iterator.hasNext()) {
+			T next = iterator.next();
+			result.append(next).append(" || ");
+		}
+		
+		return result.toString();
 	}
 	
 	public SimpleListIterator<T> iterator() {
