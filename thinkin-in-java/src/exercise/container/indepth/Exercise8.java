@@ -1,6 +1,6 @@
 package exercise.container.indepth;
 
-import util.Null;
+
 
 /*
  * Create a generic, singly linked list class called SList, which, to keep
@@ -19,21 +19,17 @@ public class Exercise8 {
 
 class SimpleList<T> {
 	
-	private class Node<T> {
+	private int size;
+	private Node<T> current;
+	private Node<T> header;
+	
+	private static class Node<T> {
 		private T element;
-		private T nextElement;
+		private Node<T> nextNode;
 		
-		public Node(T element, T nextElement) {
+		public Node(T element, Node<T> nextNode) {
 			this.element = element;
-			this.nextElement = nextElement;
-		}
-
-		public T getNextElement() {
-			return nextElement;
-		}
-
-		public void setNextElement(T nextElement) {
-			this.nextElement = nextElement;
+			this.nextNode = nextNode;
 		}
 
 		public T getElement() {
@@ -43,50 +39,78 @@ class SimpleList<T> {
 		public void setElement(T element) {
 			this.element = element;
 		}
+
+		public Node<T> getNextNode() {
+			return nextNode;
+		}
+
+		public void setNextNode(Node<T> nextNode) {
+			this.nextNode = nextNode;
+		}
 	}
 
-	private class SimpleListIterator {
+	private static class SimpleListIterator<T> {
 		private int index;
+		private SimpleList<T> list;
 		
-		public SimpleListIterator() {}
-		
-		public SimpleListIterator(int index) {
-			this.index = index;
+		public SimpleListIterator(SimpleList<T> list) {
+			this.list = list;
 		}
 		
 		public boolean hasNext() {
-			return index < size;
+			return index < list.size;
 		}
 		
 		public void add(T element) {
-			if (size == 0) {
-				header = new Node(element, null);
-				current = header;
+			if (list.size == 0) {
+				list.header = new Node<T>(element, null);
+				list.current = list.header;
 			}
 			else {
-				SimpleList<T>.Node<T> newNode = new Node<T>(element, null);
-				current.nextElement = newNode;
+				Node<T> newNode = new Node<T>(element, null);
+				list.current.setNextNode(newNode);
 			}
-			size++;
+			list.size++;
+		}
+		
+		public T next() {
+			T result;
+			if (index == 0) {
+				list.current = list.header;
+			}
+			result = list.current.getElement();
+			index++;
+			list.current = list.current.nextNode;
+			
+			return result;
 		}
 	}
-	
-	private int size;
-	private Node current;
-	private Node header;
+
 	
 	@Override
 	public String toString() {
-		// TODO
-		return null;
+//		StringBuilder result = new StringBuilder();
+//		SimpleListIterator<T> iterator = iterator();
+//		while (iterator.hasNext()) {
+//			T next = iterator.next();
+//			result.append(next).append(" ");
+//		}
+//		return result.toString();
+		return "abc";
 	}
 	
-	public SimpleListIterator iterator() {
-		return new SimpleListIterator();
+	public SimpleListIterator<T> iterator() {
+		return new SimpleListIterator<T>(this);
 	}
 	
 	public static void main(String[] args) {
+		SimpleList<String> simpleList = new SimpleList<String>();
+		SimpleListIterator<String> iterator = simpleList.iterator();
+		iterator.add("A");
+		iterator.add("B");
+		iterator.add("C");
 		
+		System.out.println(simpleList);
 	}
 }
 
