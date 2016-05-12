@@ -1,7 +1,5 @@
 package exercise.container.indepth;
 
-
-
 /*
  * Create a generic, singly linked list class called SList, which, to keep
  * things simple, does not implement the List interface. Each Link object in the list should
@@ -18,117 +16,154 @@ public class Exercise8 {
 }
 
 class SimpleList<T> {
-	
+
 	private int size;
-	private Node<T> current;
 	private Node<T> header;
-	
+
 	private static class Node<T> {
 		private static long counter;
 		private final long id;
-		private T element;
-		private Node<T> nextNode;
-		
-		public Node(T element, Node<T> nextNode) {
+		private T data;
+		private Node<T> next;
+
+		public Node(T data, Node<T> next) {
 			this.id = counter++;
-			this.element = element;
-			this.nextNode = nextNode;
+			this.data = data;
+			this.next = next;
 		}
 
-		public T getElement() {
-			return element;
+		public T getData() {
+			return data;
 		}
 
-		public void setElement(T element) {
-			this.element = element;
+		public void setData(T data) {
+			this.data = data;
 		}
 
-		public Node<T> getNextNode() {
-			return nextNode;
+		public Node<T> getNext() {
+			return next;
 		}
 
-		public void setNextNode(Node<T> nextNode) {
-			this.nextNode = nextNode;
+		public void setNext(Node<T> next) {
+			this.next = next;
 		}
 
 		@Override
 		public String toString() {
-			String nextNodeDesc = nextNode != null ? nextNode.id + "-" + nextNode.getElement() : null;
-			return "Node(" + id + "): " + element.toString() + ", next: " + nextNodeDesc;
+			String nextNodeDesc = next != null ? next.id + "-" + next.getData()
+					: null;
+			return "Node(" + id + "): " + data.toString() + ", next: "
+					+ nextNodeDesc;
 		}
-		
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (int) (id ^ (id >>> 32));
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Node other = (Node) obj;
+			if (id != other.id)
+				return false;
+			return true;
+		}
+
 	}
 
 	private static class SimpleListIterator<T> {
-		private int index;
 		private SimpleList<T> list;
-		
+		private Node<T> current;
+		private Node<T> previous;
+
 		public SimpleListIterator(SimpleList<T> list) {
 			this.list = list;
+			this.current = list.header;
 		}
-		
+
 		public boolean hasNext() {
-			return index < list.size;
+			return current != null;
 		}
-		
+
+		public T next() {
+			if (current == null) {
+				return null;
+			}
+			T result = current.getData();
+			previous = current;
+			current = current.getNext();
+
+			return result;
+		}
+
 		public void add(T element) {
 			if (list.size == 0) {
 				list.header = new Node<T>(element, null);
-				list.current = list.header;
-			}
-			else {
-				Node<T> newNode = new Node<T>(element, null);
-				list.current.setNextNode(newNode);
-				list.current = newNode;
+				current = list.header;
+			} else {
+				Node<T> currentNextNode = current.getNext();
+				Node<T> newNode = new Node<T>(element, currentNextNode);
+				current.setNext(newNode);
 			}
 			list.size++;
 		}
-		
-		public T next() {
-			if (list.header == null) {
-				return null;
+
+		public void remove() {
+			if (list.size == 0) {
+				return; // do nothing
 			}
-			T result;
-			Node<T> traverseNode = list.header;
-			
-			for (int i = 0; i < index; i++) {
-				traverseNode = traverseNode.getNextNode();
-			}
-			result = traverseNode.getElement();
-			index++;
-			
-			return result;
+			previous.setNext(current.getNext());
+			current.setNext(null);
 		}
 	}
 
-	
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		SimpleListIterator<T> iterator = iterator();
 		while (iterator.hasNext()) {
 			T next = iterator.next();
-			result.append(next).append(" || ");
+			result.append(next).append(" > ");
 		}
-		
+
 		return result.toString();
 	}
-	
+
 	public SimpleListIterator<T> iterator() {
 		return new SimpleListIterator<T>(this);
 	}
-	
+
 	public static void main(String[] args) {
 		SimpleList<String> simpleList = new SimpleList<String>();
 		SimpleListIterator<String> iterator = simpleList.iterator();
-		iterator.add("A");
+		iterator.add("A");	// new header
 		iterator.add("B");
+		iterator.next(); // the current node now switch to B
 		iterator.add("C");
+		iterator.next(); // the current node now switch to C
+		iterator.add("D");
+		iterator.next(); // the current node now switch to D
+		iterator.add("E");
+		iterator.next(); // the current node now switch to E
+		iterator.add("F");
 		
+		System.out.println(simpleList);
+		
+		iterator = simpleList.iterator();
+		for (int i = 0; i < 3; i++) {
+			iterator.next();
+		}
+		iterator.remove();
+
 		System.out.println(simpleList);
 	}
 }
-
-
-
-
