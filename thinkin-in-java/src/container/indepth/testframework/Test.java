@@ -24,5 +24,5 @@ public abstract class Test<C> {
 	 * @param testParam
 	 * @return the actual number of repetitions of test
 	 */
-	abstract int test(C container, TestParam testParam);
+	protected abstract int test(C container, TestParam testParam);
 }

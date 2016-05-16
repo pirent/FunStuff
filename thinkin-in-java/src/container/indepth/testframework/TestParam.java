@@ -18,11 +18,11 @@ public class TestParam {
 		this.loop = loop;
 	}
 	
-	int getSize() {
+	public int getSize() {
 		return size;
 	}
 	
-	int getLoop() {
+	public int getLoops() {
 		return loop;
 	}
 
