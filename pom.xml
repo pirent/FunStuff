@@ -12,5 +12,6 @@
   	<module>util</module>
   	<module>thinkin-in-java</module>
     <module>test-support</module>
+    <module>auction-sniper</module>
   </modules>
 </project>
