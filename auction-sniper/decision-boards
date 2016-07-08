@@ -1,0 +1,17 @@
+There is an auction for every items -> use item's identifier to refer to its auction.
+Build a Auction Sniper as Java Swing app to bid multiple items at a time.
+It show the identifier, stop price, current price and status of each item it's snipping.
+Buyer can add new items for snipping.
+It can dsplay values with change when events arriving from the action house.
+
+XMPP is used as underlying communication layer. It's a protocol for streaming XML elements across the network.
+The bidder can send commands, which are: 
++ Join: wanna join a auction, the sender of XMPP message identifies bidder and name of the chat session identifies the item 
++ Bid: send a bidding price to the auction
+An Auction sends events, which are:
++ Price: report current accepted price, minimum increment for the next bid and name of bidder who bid that price.
+Send to a bidder when it first jon and to all bidders whenever a new bid has been accepted.
++ Close: auction is closed. Winner of the last price event has won.
+
+XMPP message format:
+Single line with name/value pairs separated by semi-colon, name and value separated by colon.
