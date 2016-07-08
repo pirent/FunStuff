@@ -1,0 +1,6 @@
+Item: something can be identified and bought
+Bidder: a person wanna buy an item
+Bid: a statement that a bidder will pay a given price for an item
+Auction: a process for managing bids for an item
+Current price: current highest bid of an item
+Stop price: price that a bidder prepared to pay for an item
