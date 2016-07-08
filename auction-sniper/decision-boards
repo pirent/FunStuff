@@ -15,3 +15,9 @@ Send to a bidder when it first jon and to all bidders whenever a new bid has bee
 
 XMPP message format:
 Single line with name/value pairs separated by semi-colon, name and value separated by colon.
+
+Choosing an XMPP message broker:
+To let the application talk to stub auction house. Openfire and its client library Smack seem to be good.
+
+Choosing high-level test framework can work with Swing and Smack:
+Both of them are multithreaded and event-driven. Luckily, there is WindowLicker, an open-source software, that can help us.
