@@ -50,11 +50,6 @@
       <version>1.1</version>
     </dependency>
     <dependency>
-    	<groupId>org.igniterealtime.smack</groupId>
-    	<artifactId>smack-core</artifactId>
-    	<version>4.0.0</version>
-    </dependency>
-    <dependency>
     	<groupId>com.googlecode.windowlicker</groupId>
     	<artifactId>windowlicker-swing</artifactId>
     	<version>r268</version>
@@ -63,6 +58,11 @@
     	<groupId>com.googlecode.windowlicker</groupId>
     	<artifactId>windowlicker-core</artifactId>
     	<version>r268</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.igniterealtime.smack</groupId>
+    	<artifactId>smack</artifactId>
+    	<version>3.1.0</version>
     </dependency>
   </dependencies>
   <description>A place where I try to mimic step-by-step the example from book &quot;Growing Object-Oriented Software, Guided by Tests&quot; - Steve Freeman &amp; Nat Pryce.
