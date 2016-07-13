@@ -40,7 +40,8 @@ public class SingleMessageListener implements MessageListener {
 	 * @throws InterruptedException
 	 */
 	public void receiveAMessage() throws InterruptedException {
-		assertThat("Message", messages.poll(5, SECONDS), is(notNullValue()));
+		assertThat("Message is not recevied within timeout period",
+				messages.poll(5, SECONDS), is(notNullValue()));
 	}
 
 }

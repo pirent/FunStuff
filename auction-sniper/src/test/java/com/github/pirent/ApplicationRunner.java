@@ -24,7 +24,7 @@ import com.objogate.wl.swing.driver.ComponentDriver;
 public class ApplicationRunner {
 	public static final String SNIPER_ID = "sniper";
 	public static final String SNIPER_PASSWORD = "sniper";
-	public static final String XMPP_HOSTNAME = null;
+	public static final String XMPP_HOSTNAME = "localhost";
 	private AuctionSniperDriver driver;
 	
 	public void startBiddingIn(final FakeAuctionServer auction) {
@@ -37,11 +37,12 @@ public class ApplicationRunner {
 			public void run() {
 				try {
 					// Call the application through its main() function
-					Main.main(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.getItemId());
+					Main.main(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD,
+							auction.getItemId().toString());
 				}
 				catch (Exception e) {
 					// Later development stage will handle exceptions properly
-					System.err.println(e);
+					System.err.println("Got exception when running main: " + e);
 				}
 			}
 			

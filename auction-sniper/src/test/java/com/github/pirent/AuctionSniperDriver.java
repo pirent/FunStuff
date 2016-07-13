@@ -2,6 +2,7 @@ package com.github.pirent;
 
 import org.hamcrest.Matchers;
 
+import com.github.pirent.ui.MainWindow;
 import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.JFrameDriver;
 import com.objogate.wl.swing.driver.JLabelDriver;
