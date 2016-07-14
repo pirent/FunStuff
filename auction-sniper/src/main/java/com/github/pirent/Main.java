@@ -25,6 +25,8 @@ public class Main {
 	private static final int ARG_USERNAME = 1;
 	private static final int ARG_PASSWORD = 2;
 	private static final int ARG_ITEM_ID = 3;
+	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
+	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Event: BID; Price: %d";
 
 	private MainWindow ui;
 	
@@ -90,6 +92,6 @@ public class Main {
 
 		this.notToBeGCd = chat;
 
-		chat.sendMessage(new Message());
+		chat.sendMessage(JOIN_COMMAND_FORMAT);
 	}
 }

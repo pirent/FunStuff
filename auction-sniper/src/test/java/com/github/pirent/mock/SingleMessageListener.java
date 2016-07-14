@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -26,8 +27,7 @@ import org.jivesoftware.smack.packet.Message;
  */
 public class SingleMessageListener implements MessageListener {
 
-	private final ArrayBlockingQueue<Message> messages = new ArrayBlockingQueue<Message>(
-			1);
+	private final ArrayBlockingQueue<Message> messages = new ArrayBlockingQueue<Message>(1);
 
 	@Override
 	public void processMessage(Chat chat, Message message) {
@@ -37,11 +37,17 @@ public class SingleMessageListener implements MessageListener {
 	/**
 	 * Check that the Listener has received a message within the timeout period.
 	 * 
+	 * @param messageMatcher
+	 *            pull up the {@link Matcher} clause to give it caller more
+	 *            flexibility in defining what it will accept as a message
+	 * 
 	 * @throws InterruptedException
 	 */
-	public void receiveAMessage() throws InterruptedException {
+	public void receiveAMessage(Matcher<? super String> messageMatcher) throws InterruptedException {
+		final Message message = messages.poll(5, SECONDS);
 		assertThat("Message is not recevied within timeout period",
-				messages.poll(5, SECONDS), is(notNullValue()));
+				message, is(notNullValue()));
+		assertThat("Message does not match", message.getBody(), messageMatcher);
 	}
 
 }

@@ -1,10 +1,16 @@
 package com.github.pirent.mock;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+
+import com.github.pirent.Main;
 
 /**
  * <p>A stub server that allows test to check how the Auction Sniper
@@ -58,11 +64,7 @@ public class FakeAuctionServer {
 				currentChat = chat;
 				chat.addMessageListener(messageListener);
 			}
-		});
-		
-		
-		// TODO Auto-generated method stub
-		
+		});		
 	}
 
 	/**
@@ -70,8 +72,8 @@ public class FakeAuctionServer {
 	 * 
 	 * @throws InterruptedException
 	 */
-	public void hasReceivedJoinRequestFromSniper() throws InterruptedException {
-		messageListener.receiveAMessage();
+	public void hasReceivedJoinRequestFromSniper(String sniperId) throws InterruptedException {
+		receiveAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT));
 	}
 
 	public void announceClosed() throws XMPPException {
@@ -84,6 +86,32 @@ public class FakeAuctionServer {
 
 	public Object getItemId() {
 		return itemId;
+	}
+
+	public void reportPrice(int price, int increment, String bidderName)
+			throws XMPPException {
+		currentChat
+				.sendMessage(String
+						.format("SOLVersion: 1.1; Event: Price; CurrentPrice: %d; Increment: %d; Bidder: %s",
+								price, increment, bidderName));
+	}
+
+	public void hasReceiveBid(int bid, String sniperId) throws InterruptedException {
+		receiveAMessageMatching(sniperId, equalTo(String.format(Main.BID_COMMAND_FORMAT, bid)));
+		
+//		messageListener.receiveAMessage(equalTo(String.format(
+//				"SOLVersion: 1.1; Command: BID; Price: %d;", bid)));
+	}
+	
+	private void receiveAMessageMatching(String sniperId,
+			Matcher<? super String> messageMatcher) throws InterruptedException {
+		messageListener.receiveAMessage(messageMatcher);
+		
+		// Check the Sniper's identifier after checking the contents of the message
+		// This forces the server to wait until the message has arrived, which mean that
+		// it must have accepted the connection and set up currentChat
+		assertThat("Current chat's participant should match sniper",
+				currentChat.getParticipant(), equalTo(sniperId));
 	}
 
 }

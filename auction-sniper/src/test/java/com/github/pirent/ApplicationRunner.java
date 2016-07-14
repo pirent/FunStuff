@@ -25,6 +25,7 @@ public class ApplicationRunner {
 	public static final String SNIPER_ID = "sniper";
 	public static final String SNIPER_PASSWORD = "sniper";
 	public static final String XMPP_HOSTNAME = "localhost";
+	public static final String SNIPER_XMPP_ID = "sniper@127.0.0.1/Auction";
 	private AuctionSniperDriver driver;
 	
 	public void startBiddingIn(final FakeAuctionServer auction) {
@@ -71,6 +72,11 @@ public class ApplicationRunner {
 			// in another test
 			driver.dispose();
 		}
+	}
+
+	public void hasShownSniperIsBidding() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
