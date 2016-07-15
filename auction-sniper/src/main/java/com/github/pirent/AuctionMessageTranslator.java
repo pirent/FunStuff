@@ -1,5 +1,8 @@
 package com.github.pirent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -21,11 +24,31 @@ public class AuctionMessageTranslator implements MessageListener {
 	}
 
 	@Override
-	public void processMessage(Chat unusedChat, Message message) {
+	public void processMessage(Chat chat, Message message) {
+		Map<String, String> event = unpackEventFrom(message);
+		
 		/*
 		 * Delegate the handling of an interpreted event to a collaborator
 		 */
-		listener.auctionClosed();
+		String type = event.get("Event");
+		if ("CLOSE".equals(type)) {
+			listener.auctionClosed();
+		}
+		else if ("PRICE".equals(type)) {
+			listener.currentPrice(Integer.parseInt(event.get("CurrentPrice")),
+					Integer.parseInt(event.get("Increment")));
+		}
+	}
+
+	private Map<String, String> unpackEventFrom(Message message) {
+		Map<String, String> event = new HashMap<String, String>();
+		
+		for (String element : message.getBody().split(";")) {
+			String[] pair = element.split(":");
+			event.put(pair[0].trim(), pair[1].trim());
+		}
+		
+		return event;
 	}
 
 }
