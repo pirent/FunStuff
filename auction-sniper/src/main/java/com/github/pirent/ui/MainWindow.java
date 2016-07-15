@@ -15,6 +15,7 @@ public class MainWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	public static final String STATUS_LOST = "Lost";
+	public static final String STATUS_BINDING = "Bidding";
 
 	private final JLabel sniperStatus = createLabel(Main.STATUS_JOINING);
 	

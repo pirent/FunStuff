@@ -1,16 +1,17 @@
 package com.github.pirent;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.SwingUtilities;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
 
 import com.github.pirent.ui.MainWindow;
 
-public class Main {
+public class Main implements AuctionEventListener {
 
 	public static final String STATUS_JOINING = "Joining";
 	public static final String STATUS_LOST = "Lost";
@@ -73,25 +74,37 @@ public class Main {
 		});
 	}
 	
-	private void joinAuction(XMPPConnection connection, String itemId)
-			throws XMPPException {
+	private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
+		disconnectWhenUICloses(connection);
+		
 		Chat chat = connection.getChatManager().createChat(
-				auctionId(itemId, connection), new MessageListener() {
-
-					@Override
-					public void processMessage(Chat chat, Message message) {
-						SwingUtilities.invokeLater(new Runnable() {
-
-							@Override
-							public void run() {
-								ui.showStatus(MainWindow.STATUS_LOST);
-							}
-						});
-					}
-				});
-
+				auctionId(itemId, connection),
+				new AuctionMessageTranslator(this)); 
+		
 		this.notToBeGCd = chat;
 
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
+	}
+
+	private void disconnectWhenUICloses(final XMPPConnection connection) {
+		ui.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+				connection.disconnect();
+			}
+			
+		});
+	}
+
+	@Override
+	public void auctionClosed() {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				ui.showStatus(MainWindow.STATUS_LOST);
+			}
+		});
 	}
 }

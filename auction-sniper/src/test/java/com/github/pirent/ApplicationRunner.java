@@ -1,6 +1,7 @@
 package com.github.pirent;
 
 import com.github.pirent.mock.FakeAuctionServer;
+import com.github.pirent.ui.MainWindow;
 import com.objogate.wl.swing.driver.ComponentDriver;
 
 /**
@@ -75,8 +76,7 @@ public class ApplicationRunner {
 	}
 
 	public void hasShownSniperIsBidding() {
-		// TODO Auto-generated method stub
-		
+		driver.showSniperStatus(MainWindow.STATUS_BINDING);
 	}
 
 }
