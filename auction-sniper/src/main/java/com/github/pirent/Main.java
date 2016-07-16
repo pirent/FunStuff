@@ -11,7 +11,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import com.github.pirent.ui.MainWindow;
 
-public class Main implements SniperListener {
+public class Main {
 
 	public static final String STATUS_JOINING = "Joining";
 	public static final String STATUS_LOST = "Lost";
@@ -81,22 +81,12 @@ public class Main implements SniperListener {
 				auctionId(itemId, connection), null);
 		this.notToBeGCd = chat;
 		
-		Auction auction = new Auction() {
+		Auction auction = new XMPPAuction(chat); 
 
-			@Override
-			public void bid(int amount) {
-				try {
-					chat.sendMessage(String.format(BID_COMMAND_FORMAT, amount));
-				}
-				catch (XMPPException e) {
-					e.printStackTrace();
-				}
-			}	
-		};
-		
 		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(
-				auction, this)));
-		chat.sendMessage(JOIN_COMMAND_FORMAT);
+				auction, new SniperStateDisplayer())));
+		
+		auction.join();
 	}
 
 	private void disconnectWhenUICloses(final XMPPConnection connection) {
@@ -109,26 +99,33 @@ public class Main implements SniperListener {
 			
 		});
 	}
+	
+	public class SniperStateDisplayer implements SniperListener {
 
-	@Override
-	public void sniperLost() {
-		SwingUtilities.invokeLater(new Runnable() {
+		@Override
+		public void sniperLost() {
+			showStatus(MainWindow.STATUS_BIDDING);
+		}
 
-			@Override
-			public void run() {
-				ui.showStatus(MainWindow.STATUS_LOST);
-			}
-		});
-	}
+		@Override
+		public void sniperBidding() {
+			showStatus(MainWindow.STATUS_LOST);
+		}
+		
+		@Override
+		public void sniperWinning() {
+			showStatus(MainWindow.STATUS_WINNING);
+		}
 
-	@Override
-	public void sniperBidding() {
-		SwingUtilities.invokeLater(new Runnable() {
+		private void showStatus(final String status) {
+			SwingUtilities.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					ui.showStatus(status);
+				}
+			});
+		}
 
-			@Override
-			public void run() {
-				ui.showStatus(MainWindow.STATUS_BIDDING);
-			}
-		});
 	}
 }

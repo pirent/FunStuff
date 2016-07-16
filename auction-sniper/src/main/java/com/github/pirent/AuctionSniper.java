@@ -11,7 +11,6 @@ public class AuctionSniper implements AuctionEventListener {
 	}
 
 	public void auctionClosed() {
-		System.out.println("AuctionSniper > auction closed");
 		sniperListener.sniperLost();
 	}
 

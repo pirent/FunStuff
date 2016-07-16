@@ -17,7 +17,7 @@ import org.jivesoftware.smack.packet.Message;
  */
 public class AuctionMessageTranslator implements MessageListener {
 
-	private AuctionEventListener listener;
+	private final AuctionEventListener listener;
 	
 	public AuctionMessageTranslator(AuctionEventListener listener) {
 		this.listener = listener;
@@ -25,29 +25,60 @@ public class AuctionMessageTranslator implements MessageListener {
 
 	@Override
 	public void processMessage(Chat chat, Message message) {
-		Map<String, String> event = unpackEventFrom(message);
+		AuctionEvent event = AuctionEvent.from(message.getBody());
 		
-		/*
-		 * Delegate the handling of an interpreted event to a collaborator
-		 */
-		String type = event.get("Event");
+		// Delegate the handling of an interpreted event to a collaborator
+		String type = event.type();
 		if ("CLOSE".equals(type)) {
 			listener.auctionClosed();
 		}
 		else if ("PRICE".equals(type)) {
-			listener.currentPrice(Integer.parseInt(event.get("CurrentPrice")),
-					Integer.parseInt(event.get("Increment")));
+			listener.currentPrice(event.currentPrice(),
+					event.increment());
 		}
 	}
+	
+	private static class AuctionEvent {
+		
+		private final Map<String, String> fields = new HashMap<String, String>();
+		
+		public static AuctionEvent from(String messageBody) {
+			AuctionEvent event = new AuctionEvent();
+			
+			for (String field : fieldsIn(messageBody)) {
+				event.addField(field);
+			}
+			
+			return event;
+		}
 
-	private Map<String, String> unpackEventFrom(Message message) {
-		Map<String, String> event = new HashMap<String, String>();
-		for (String element : message.getBody().split(";")) {
-			String[] pair = element.split(":");
-			event.put(pair[0].trim(), pair[1].trim());
+		private static String[] fieldsIn(String messageBody) {
+			return messageBody.split(";");
+		}
+
+		public int increment() {
+			return getInt("Increment");
+		}
+
+		public int currentPrice() {
+			return getInt("CurrentPrice");
+		}
+
+		public String type() {
+			return get("Event");
+		}
+
+		private String get(String fieldName) {
+			return fields.get(fieldName);
 		}
 		
-		return event;
+		private int getInt(String fieldName) {
+			return Integer.parseInt(get(fieldName));
+		}
+		
+		private void addField(String field) {
+			String[] pair = field.split(":");
+			fields.put(pair[0].trim(), pair[1].trim());
+		}
 	}
-
 }
