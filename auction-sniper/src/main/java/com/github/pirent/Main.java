@@ -11,7 +11,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import com.github.pirent.ui.MainWindow;
 
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
 
 	public static final String STATUS_JOINING = "Joining";
 	public static final String STATUS_LOST = "Lost";
@@ -77,12 +77,25 @@ public class Main implements AuctionEventListener {
 	private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
 		disconnectWhenUICloses(connection);
 		
-		Chat chat = connection.getChatManager().createChat(
-				auctionId(itemId, connection),
-				new AuctionMessageTranslator(this)); 
-		
+		final Chat chat = connection.getChatManager().createChat(
+				auctionId(itemId, connection), null);
 		this.notToBeGCd = chat;
+		
+		Auction auction = new Auction() {
 
+			@Override
+			public void bid(int amount) {
+				try {
+					chat.sendMessage(String.format(BID_COMMAND_FORMAT, amount));
+				}
+				catch (XMPPException e) {
+					e.printStackTrace();
+				}
+			}	
+		};
+		
+		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(
+				auction, this)));
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
 	}
 
@@ -98,7 +111,7 @@ public class Main implements AuctionEventListener {
 	}
 
 	@Override
-	public void auctionClosed() {
+	public void sniperLost() {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -109,8 +122,13 @@ public class Main implements AuctionEventListener {
 	}
 
 	@Override
-	public void currentPrice(int i, int j) {
-		// TODO Auto-generated method stub
-		
+	public void sniperBidding() {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				ui.showStatus(MainWindow.STATUS_BIDDING);
+			}
+		});
 	}
 }

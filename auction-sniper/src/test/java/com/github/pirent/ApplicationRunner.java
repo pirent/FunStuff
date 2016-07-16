@@ -76,7 +76,7 @@ public class ApplicationRunner {
 	}
 
 	public void hasShownSniperIsBidding() {
-		driver.showSniperStatus(MainWindow.STATUS_BINDING);
+		driver.showSniperStatus(MainWindow.STATUS_BIDDING);
 	}
 
 }

@@ -42,7 +42,6 @@ public class AuctionMessageTranslator implements MessageListener {
 
 	private Map<String, String> unpackEventFrom(Message message) {
 		Map<String, String> event = new HashMap<String, String>();
-		
 		for (String element : message.getBody().split(";")) {
 			String[] pair = element.split(":");
 			event.put(pair[0].trim(), pair[1].trim());
