@@ -7,8 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.github.pirent.AuctionEventListener.PriceSource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuctionSniperTest {
@@ -38,12 +39,19 @@ public class AuctionSniperTest {
 		final int price = 1001;
 		final int increment = 25;
 		
-		sniper.currentPrice(price, increment);
+		sniper.currentPrice(price, increment, PriceSource.FROM_OTHER_SNIPPER);
 		
 		verify(auction).bid(price + increment);
 		
 		// We don't care if the Sniper notifies the listener more than once that it's bidding
 		// it's just a status update, so atLeast(1) is used.
 		verify(sniperListener, atLeast(1)).sniperBidding();
+	}
+	
+	@Test
+	public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
+		sniper.currentPrice(123, 45, PriceSource.FROM_SNIPER);
+		
+		verify(sniperListener, atLeast(1)).sniperWinning();
 	}
 }
