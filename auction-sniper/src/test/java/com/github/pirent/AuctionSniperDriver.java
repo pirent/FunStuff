@@ -1,11 +1,12 @@
 package com.github.pirent;
 
-import org.hamcrest.Matchers;
+import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
+import static org.hamcrest.Matchers.equalTo;
 
 import com.github.pirent.ui.MainWindow;
 import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.JFrameDriver;
-import com.objogate.wl.swing.driver.JLabelDriver;
+import com.objogate.wl.swing.driver.JTableDriver;
 import com.objogate.wl.swing.gesture.GesturePerformer;
 
 /**
@@ -28,15 +29,9 @@ public class AuctionSniperDriver extends JFrameDriver {
 
 	@SuppressWarnings("unchecked")
 	public void showSniperStatus(String statusText) {
-		// Look for the relevant label in the user interface
+		// Look for the relevant singke-cell JTable in the user interface
 		// and confirms that it shows the given status
-		new JLabelDriver(this, named(Main.SNIPER_STATUS_NAME)).hasText(Matchers
-				.equalTo(statusText));
-	}
-
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+		new JTableDriver(this).hasCell(withLabelText(equalTo(statusText)));
 	}
 
 }

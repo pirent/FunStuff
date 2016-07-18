@@ -1,46 +1,53 @@
 package com.github.pirent.ui;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.Container;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
-
-import com.github.pirent.Main;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class MainWindow extends JFrame {
 
 	public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
 	
-	private static final long serialVersionUID = 1L;
 	public static final String STATUS_LOST = "Lost";
 	public static final String STATUS_BIDDING = "Bidding";
 	public static final String STATUS_WINNING = "Winning";
 	public static final String STATUS_WON = "Won";
-
-	private final JLabel sniperStatus = createLabel(Main.STATUS_JOINING);
+	public static final String STATUS_JOINING = "Joining";
+	
+	private static final String APPLICATION_TITLE = "Auction Sniper";	
+	private static final long serialVersionUID = 1L;
+	private static final String SNIPERS_TABLE_NAME = "Sniper Table";
+	
+	private final SnipersTableModel snipers = new SnipersTableModel();
 	
 	public MainWindow() {
-		super("Auction Sniper");
+		super(APPLICATION_TITLE);
 		setName(MAIN_WINDOW_NAME);
-		add(sniperStatus);
+		fillContentPane(makeSniperTable());
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
-	private JLabel createLabel(String initialText) {
-		JLabel result = new JLabel(initialText);
+	private void fillContentPane(JTable snipersTable) {
+		final Container contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
 		
-		result.setName(SNIPER_STATUS_NAME);
-		result.setBorder(new LineBorder(Color.BLACK));
-		
-		return result;
+		contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
 	}
 
-	public void showStatus(String status) {
-		sniperStatus.setText(status);
+	private JTable makeSniperTable() {
+		final JTable snipersTable = new JTable(snipers);
+		snipersTable.setName(SNIPERS_TABLE_NAME);
+		return snipersTable;
+	}
+
+	public void showStatusText(String statusText) {
+		snipers.setStatusText(statusText);
 	}
 
 }
