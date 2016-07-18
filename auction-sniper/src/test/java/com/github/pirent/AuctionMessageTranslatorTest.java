@@ -17,7 +17,7 @@ public class AuctionMessageTranslatorTest {
 
 	public static final Chat UNUSED_CHAT = null;
 
-	private static final String SNIPER_ID = null;
+	private static final String SNIPER_ID = "localhost";
 	
 	@Mock
 	private AuctionEventListener listener;
@@ -52,7 +52,7 @@ public class AuctionMessageTranslatorTest {
 	@Test
 	public void notifiesBidDetailsWhenCurrentPriceMessageReceivedFromSniper() {
 		Message message = new Message();
-		message.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 234; Increment: 5, Bidder: " + SNIPER_ID + ";");
+		message.setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 234; Increment: 5; Bidder: " + SNIPER_ID + ";");
 		
 		translator.processMessage(UNUSED_CHAT, message);
 		
