@@ -1,7 +1,8 @@
 package com.github.pirent;
 
+import static com.objogate.wl.swing.matcher.IterableComponentsMatcher.matching;
 import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
-import static org.hamcrest.Matchers.equalTo;
+import static java.lang.String.valueOf;
 
 import com.github.pirent.ui.MainWindow;
 import com.objogate.wl.swing.AWTEventQueueProber;
@@ -28,10 +29,14 @@ public class AuctionSniperDriver extends JFrameDriver {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void showSniperStatus(String statusText) {
+	public void showSniperStatus(String itemId, int lastPrice, int lastBid, String statusText) {
 		// Look for the relevant singke-cell JTable in the user interface
 		// and confirms that it shows the given status
-		new JTableDriver(this).hasCell(withLabelText(equalTo(statusText)));
+		JTableDriver table = new JTableDriver(this);
+		table.hasRow(matching(withLabelText(itemId),
+				withLabelText(valueOf(lastPrice)),
+				withLabelText(valueOf(lastBid)),
+				withLabelText(statusText)));
 	}
 
 }

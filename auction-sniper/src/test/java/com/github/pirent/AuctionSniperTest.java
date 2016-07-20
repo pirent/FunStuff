@@ -17,6 +17,8 @@ import com.github.pirent.AuctionEventListener.PriceSource;
 @RunWith(MockitoJUnitRunner.class)
 public class AuctionSniperTest {
 
+	private static final String ITEM_ID = "item-5000";
+
 	@Mock
 	private Auction auction;
 	
@@ -41,14 +43,15 @@ public class AuctionSniperTest {
 	public void bidHigherAndReportsBiddingWhenANewPriceArrives() {
 		final int price = 1001;
 		final int increment = 25;
+		final int bid = price + increment;
 		
 		sniper.currentPrice(price, increment, PriceSource.FROM_OTHER_SNIPPER);
 		
-		verify(auction).bid(price + increment);
+		verify(auction).bid(bid);
 		
 		// We don't care if the Sniper notifies the listener more than once that it's bidding
 		// it's just a status update, so atLeast(1) is used.
-		verify(sniperListener, atLeast(1)).sniperBidding();
+		verify(sniperListener, atLeast(1)).sniperBidding(new com.github.pirent.SniperState(ITEM_ID, price, bid));
 	}
 	
 	@Test
@@ -92,7 +95,7 @@ public class AuctionSniperTest {
 		}
 
 		@Override
-		public void sniperBidding() {
+		public void sniperBidding(com.github.pirent.SniperState state) {
 			sniperState = SniperState.BIDDING;
 		}
 

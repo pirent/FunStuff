@@ -28,8 +28,10 @@ public class ApplicationRunner {
 	public static final String XMPP_HOSTNAME = "localhost";
 	public static final String SNIPER_XMPP_ID = "sniper@127.0.0.1/Auction";
 	private AuctionSniperDriver driver;
+	private String itemId;
 	
 	public void startBiddingIn(final FakeAuctionServer auction) {
+		this.itemId = auction.getItemId();
 		
 		// WindowLicker can control Swing components if they're in the same JVM
 		// so we start the Sniper in the new thread
@@ -60,11 +62,13 @@ public class ApplicationRunner {
 		// Wait for the status to change to Joining
 		// This assertion says that somewhere in the user interface. there is a label
 		// that describes the Sniper's state
-		driver.showSniperStatus(Main.STATUS_JOINING);
+		// FIXME: have no idea what is the input for the last price and last bid
+		driver.showSniperStatus(itemId, -1, -1, Main.STATUS_JOINING);
 	}
 
 	public void showSniperHasLostAuction() {
-		driver.showSniperStatus(Main.STATUS_LOST);
+		// FIXME: have no idea what is the input for the last price and last bid
+		driver.showSniperStatus(itemId, -1, -1, Main.STATUS_LOST);
 	}
 
 	public void stop() {
@@ -75,16 +79,16 @@ public class ApplicationRunner {
 		}
 	}
 
-	public void hasShownSniperIsBidding() {
-		driver.showSniperStatus(MainWindow.STATUS_BIDDING);
+	public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
+		driver.showSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
 	}
 
-	public void hasShownSniperIsWinning() {
-		driver.showSniperStatus(MainWindow.STATUS_WINNING);
+	public void hasShownSniperIsWinning(int winningBid) {
+		driver.showSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
 	}
 
-	public void showsSniperHasWonAuction() {
-		driver.showSniperStatus(MainWindow.STATUS_WON);
+	public void showsSniperHasWonAuction(int lastPrice) {
+		driver.showSniperStatus(itemId, lastPrice, lastPrice, MainWindow.STATUS_WON);
 	}
 
 }

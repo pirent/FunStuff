@@ -44,7 +44,7 @@ public class AuctionSniperEndToEndTest {
 		// Tell the stub auction to send message back to Sniper with the news about price
 		auction.reportPrice(1000, 98, "other bidder");
 		// Check if Sniper shows that it's now bidding after receiving the price update msg
-		application.hasShownSniperIsBidding();
+		application.hasShownSniperIsBidding(1000, 1098);
 		
 		// Tell the stub auction to check that it has received a bid from the Sniper
 		// that is equal to the last price plus the minimum increment
@@ -62,15 +62,18 @@ public class AuctionSniperEndToEndTest {
 		auction.hasReceivedJoinRequestFromSniper(ApplicationRunner.SNIPER_XMPP_ID);
 		
 		auction.reportPrice(1000, 98, "other bidder");
-		application.hasShownSniperIsBidding();
-		
+		// last price, last bid
+		application.hasShownSniperIsBidding(1000, 1098);
+	
 		auction.hasReceiveBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
 		
 		auction.reportPrice(1098, 97, ApplicationRunner.SNIPER_XMPP_ID);
-		application.hasShownSniperIsWinning();
+		// winning bid
+		application.hasShownSniperIsWinning(1098);
 		
 		auction.announceClosed();
-		application.showsSniperHasWonAuction();
+		// last price
+		application.showsSniperHasWonAuction(1098);
 	}
 	
 	@After

@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import com.github.pirent.SniperState;
+
 public class MainWindow extends JFrame {
 
 	public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
@@ -48,6 +50,10 @@ public class MainWindow extends JFrame {
 
 	public void showStatusText(String statusText) {
 		snipers.setStatusText(statusText);
+	}
+
+	public void sniperStateChanged(SniperState sniperState, String statusText) {
+		snipers.sniperStatusChanged(sniperState, statusText);
 	}
 
 }
