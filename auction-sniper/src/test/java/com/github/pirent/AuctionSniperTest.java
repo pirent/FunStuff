@@ -1,9 +1,15 @@
 package com.github.pirent;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
+import java.beans.FeatureDescriptor;
+
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +28,7 @@ public class AuctionSniperTest {
 	@Mock
 	private Auction auction;
 	
-	private SniperState sniperState = SniperState.IDLE;
+	private SniperTestInternalState sniperState = SniperTestInternalState.IDLE;
 	private AuctionSniper sniper;
 	private SniperListener sniperListener;
 	
@@ -51,7 +57,18 @@ public class AuctionSniperTest {
 		
 		// We don't care if the Sniper notifies the listener more than once that it's bidding
 		// it's just a status update, so atLeast(1) is used.
-		verify(sniperListener, atLeast(1)).sniperBidding(new com.github.pirent.SniperState(ITEM_ID, price, bid));
+		verify(sniperListener, atLeast(1)).sniperBidding(new com.github.pirent.SniperSnapshot(ITEM_ID, price, bid));
+	}
+	
+	private Matcher<SniperSnapshot> aSniperThatIs(final SniperState state) {
+		return new FeatureMatcher<SniperSnapshot, SniperState>(equalTo(state), "sniper that is ", "was") {
+
+			@Override
+			protected SniperState featureValueOf(SniperSnapshot actual) {
+				return actual.getSniperState();
+			}
+			
+		};
 	}
 	
 	@Test
@@ -73,7 +90,7 @@ public class AuctionSniperTest {
 		sniper.currentPrice(123, 45, PriceSource.FROM_OTHER_SNIPPER);
 		sniper.auctionClosed();
 		
-		assertEquals(sniperState, SniperState.BIDDING);
+		assertEquals(sniperState, SniperTestInternalState.BIDDING);
 		verify(sniperListener, atLeast(1)).sniperLost();
 	}
 	
@@ -82,7 +99,7 @@ public class AuctionSniperTest {
 		sniper.currentPrice(123, 45, PriceSource.FROM_SNIPER);
 		sniper.auctionClosed();
 		
-		assertEquals(sniperState, SniperState.WINNING);
+		assertEquals(sniperState, SniperTestInternalState.WINNING);
 		verify(sniperListener, atLeast(1)).sniperWon();
 	}
 	
@@ -95,13 +112,13 @@ public class AuctionSniperTest {
 		}
 
 		@Override
-		public void sniperBidding(com.github.pirent.SniperState state) {
-			sniperState = SniperState.BIDDING;
+		public void sniperBidding(com.github.pirent.SniperSnapshot state) {
+			sniperState = SniperTestInternalState.BIDDING;
 		}
 
 		@Override
 		public void sniperWinning() {
-			sniperState = SniperState.WINNING;
+			sniperState = SniperTestInternalState.WINNING;
 		}
 
 		@Override
@@ -109,10 +126,22 @@ public class AuctionSniperTest {
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void sniperStateChanged(SniperSnapshot sniperSnapshot) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 	
-	private enum SniperState {
+	/**
+	 * Internal state which purpose is used only for the test.
+	 * 
+	 * @author pirent
+	 *
+	 */
+	private enum SniperTestInternalState {
 		IDLE, WINNING, BIDDING
 	}
 	

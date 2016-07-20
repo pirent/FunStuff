@@ -109,8 +109,8 @@ public class Main {
 		}
 
 		@Override
-		public void sniperBidding(final SniperState state) {
-			// TODO what to do with sniper state
+		public void sniperBidding(final SniperSnapshot state) {
+
 			SwingUtilities.invokeLater(new Runnable() {
 				
 				@Override
@@ -138,6 +138,12 @@ public class Main {
 					ui.showStatusText(status);
 				}
 			});
+		}
+
+		@Override
+		public void sniperStateChanged(SniperSnapshot sniperSnapshot) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	}

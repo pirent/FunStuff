@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import com.github.pirent.SniperState;
+import com.github.pirent.SniperSnapshot;
 
 public class MainWindow extends JFrame {
 
@@ -52,8 +52,8 @@ public class MainWindow extends JFrame {
 		snipers.setStatusText(statusText);
 	}
 
-	public void sniperStateChanged(SniperState sniperState, String statusText) {
-		snipers.sniperStatusChanged(sniperState, statusText);
+	public void sniperStateChanged(SniperSnapshot sniperState, String statusText) {
+		snipers.sniperStateChanged(sniperState, statusText);
 	}
 
 }
