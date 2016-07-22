@@ -35,7 +35,7 @@ public class AuctionSniperTest {
 	@Before
 	public void init() {
 		sniperListener = Mockito.spy(new SniperListenerStub());
-		sniper = new AuctionSniper(auction, sniperListener);
+		sniper = new AuctionSniper(ITEM_ID, auction, sniperListener);
 	}
 	
 	@Test
@@ -73,9 +73,17 @@ public class AuctionSniperTest {
 	
 	@Test
 	public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
-		sniper.currentPrice(123, 45, PriceSource.FROM_SNIPER);
+		// First call is to force the Sniper to bid
+		sniper.currentPrice(123, 12, PriceSource.FROM_OTHER_SNIPPER);
 		
-		verify(sniperListener, atLeast(1)).sniperWinning();
+		// Again to tell that the Sniper that it's winning
+		sniper.currentPrice(135, 45, PriceSource.FROM_SNIPER);
+		
+		
+		
+		assertEquals(sniperState, SniperTestInternalState.BIDDING);
+		verify(sniperListener, atLeast(1)).sniperStateChanged(
+				new SniperSnapshot(ITEM_ID, 135, 135, SniperState.WINNING));
 	}
 	
 	@Test

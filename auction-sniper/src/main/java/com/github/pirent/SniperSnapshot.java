@@ -80,4 +80,22 @@ public class SniperSnapshot {
 				+ ", lastBid=" + lastBid + ", sniperState=" + sniperState + "]";
 	}
 
+	public static SniperSnapshot join(String itemId) {
+		return new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+	}
+
+	public SniperSnapshot winning(int newLastPrice) {
+		return new SniperSnapshot(itemId, newLastPrice, lastBid,
+				SniperState.WINNING);
+	}
+
+	public SniperSnapshot bidding(int newLastPrice, int newLastBid) {
+		return new SniperSnapshot(itemId, newLastPrice, newLastBid,
+				SniperState.BIDDING);
+	}
+
+	public SniperSnapshot closed() {
+		return new SniperSnapshot(itemId, lastPrice, lastBid, sniperState.whenAuctionClosed());
+	}
+
 }

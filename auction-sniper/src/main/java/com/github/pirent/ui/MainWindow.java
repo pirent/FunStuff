@@ -48,12 +48,13 @@ public class MainWindow extends JFrame {
 		return snipersTable;
 	}
 
-	public void showStatusText(String statusText) {
+	@Deprecated
+	public void showState(String statusText) {
 		snipers.setStatusText(statusText);
 	}
 
-	public void sniperStateChanged(SniperSnapshot sniperState, String statusText) {
-		snipers.sniperStateChanged(sniperState, statusText);
+	public void sniperStateChanged(SniperSnapshot sniperState) {
+		snipers.sniperStateChanged(sniperState);
 	}
 
 }
