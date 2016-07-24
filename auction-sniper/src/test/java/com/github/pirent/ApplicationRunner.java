@@ -2,6 +2,7 @@ package com.github.pirent;
 
 import com.github.pirent.mock.FakeAuctionServer;
 import com.github.pirent.ui.MainWindow;
+import com.github.pirent.ui.SnipersTableModel;
 import com.objogate.wl.swing.driver.ComponentDriver;
 
 /**
@@ -42,7 +43,7 @@ public class ApplicationRunner {
 				try {
 					// Call the application through its main() function
 					Main.main(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD,
-							auction.getItemId().toString());
+							auction.getItemId());
 				}
 				catch (Exception e) {
 					// Later development stage will handle exceptions properly
@@ -59,16 +60,23 @@ public class ApplicationRunner {
 		// One second will be enough to smooth over minor runtime delays
 		driver = new AuctionSniperDriver(1000);
 		
+		driver.hasTitle(MainWindow.APPLICATION_TITLE);
+		driver.hasColumnTitles();
+		
 		// Wait for the status to change to Joining
 		// This assertion says that somewhere in the user interface. there is a label
 		// that describes the Sniper's state
-		// FIXME: have no idea what is the input for the last price and last bid
-		driver.showSniperStatus(itemId, -1, -1, Main.STATUS_JOINING);
+		// FIXME I think this is a hack for the itemId cause the SnipersTableModel
+		// is initialized with a snapshot that has a blank item ID
+		SniperSnapshot sniperSnapshot = SniperSnapshot.join("");
+		driver.showSniperStatus(sniperSnapshot.getItemId(),
+				sniperSnapshot.getLastPrice(), sniperSnapshot.getLastBid(),
+				SnipersTableModel.textFor(sniperSnapshot.getSniperState()));
 	}
 
-	public void showSniperHasLostAuction() {
-		// FIXME: have no idea what is the input for the last price and last bid
-		driver.showSniperStatus(itemId, -1, -1, Main.STATUS_LOST);
+	public void showSniperHasLostAuction(int lastPrice, int lastBid) {
+		driver.showSniperStatus(itemId, lastPrice, lastBid,
+				SnipersTableModel.textFor(SniperState.LOST));
 	}
 
 	public void stop() {
@@ -80,15 +88,18 @@ public class ApplicationRunner {
 	}
 
 	public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-		driver.showSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
+		driver.showSniperStatus(itemId, lastPrice, lastBid,
+				SnipersTableModel.textFor(SniperState.BIDDING));
 	}
 
 	public void hasShownSniperIsWinning(int winningBid) {
-		driver.showSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
+		driver.showSniperStatus(itemId, winningBid, winningBid,
+				SnipersTableModel.textFor(SniperState.WINNING));
 	}
 
 	public void showsSniperHasWonAuction(int lastPrice) {
-		driver.showSniperStatus(itemId, lastPrice, lastPrice, MainWindow.STATUS_WON);
+		driver.showSniperStatus(itemId, lastPrice, lastPrice,
+				SnipersTableModel.textFor(SniperState.WON));
 	}
 
 }

@@ -13,21 +13,16 @@ public class MainWindow extends JFrame {
 
 	public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
+	public static final String APPLICATION_TITLE = "Auction Sniper";
 	
-//	public static final String STATUS_LOST = "Lost";
-//	public static final String STATUS_BIDDING = "Bidding";
-//	public static final String STATUS_WINNING = "Winning";
-//	public static final String STATUS_WON = "Won";
-//	public static final String STATUS_JOINING = "Joining";
-	
-	private static final String APPLICATION_TITLE = "Auction Sniper";	
 	private static final long serialVersionUID = 1L;
 	private static final String SNIPERS_TABLE_NAME = "Sniper Table";
 	
-	private final SnipersTableModel snipers = new SnipersTableModel();
+	private final SnipersTableModel snipers;
 	
-	public MainWindow() {
+	public MainWindow(SnipersTableModel snipers) {
 		super(APPLICATION_TITLE);
+		this.snipers = snipers;
 		setName(MAIN_WINDOW_NAME);
 		fillContentPane(makeSniperTable());
 		pack();
@@ -46,11 +41,6 @@ public class MainWindow extends JFrame {
 		final JTable snipersTable = new JTable(snipers);
 		snipersTable.setName(SNIPERS_TABLE_NAME);
 		return snipersTable;
-	}
-
-	@Deprecated
-	public void showState(String statusText) {
-		snipers.setStatusText(statusText);
 	}
 
 	public void sniperStateChanged(SniperSnapshot sniperState) {

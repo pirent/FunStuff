@@ -10,6 +10,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 import com.github.pirent.ui.MainWindow;
+import com.github.pirent.ui.SnipersTableModel;
 
 public class Main {
 
@@ -29,6 +30,7 @@ public class Main {
 	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
 	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Event: BID; Price: %d";
 
+	private final SnipersTableModel sniperListener = new SnipersTableModel();
 	private MainWindow ui;
 	
 	@SuppressWarnings("unused")
@@ -69,7 +71,7 @@ public class Main {
 
 			@Override
 			public void run() {
-				ui = new MainWindow();
+				ui = new MainWindow(sniperListener);
 			}
 		});
 	}
@@ -85,7 +87,7 @@ public class Main {
 
 		chat.addMessageListener(new AuctionMessageTranslator(connection
 				.getUser(), new AuctionSniper(itemId, auction,
-				new SniperStateDisplayer())));
+				new SwingThreadSniperListener(sniperListener))));
 		
 		auction.join();
 	}
@@ -101,27 +103,19 @@ public class Main {
 		});
 	}
 	
-	public class SniperStateDisplayer implements SniperListener {
-
-		@Override
-		public void sniperLost() {
-			showStatus(MainWindow.STATUS_LOST);
-		}
-
-		@Override
-		public void sniperWon() {
-			showStatus(MainWindow.STATUS_WON);
-		}
+	/**
+	 * A Decorator to start {@link SniperListener} in a new Swing thread
+	 * 
+	 * @author pirent
+	 *
+	 */
+	public class SwingThreadSniperListener implements SniperListener {
 		
-		@Deprecated
-		private void showStatus(final String status) {
-			SwingUtilities.invokeLater(new Runnable() {
-				
-				@Override
-				public void run() {
-					ui.showState(status);
-				}
-			});
+		private final SniperListener sniperListener;
+
+		public SwingThreadSniperListener(SniperListener sniperListener) {
+			super();
+			this.sniperListener = sniperListener;
 		}
 
 		@Override
@@ -130,7 +124,7 @@ public class Main {
 				
 				@Override
 				public void run() {
-					ui.sniperStateChanged(sniperSnapshot);
+					sniperListener.sniperStateChanged(sniperSnapshot);
 				}
 			});
 		}

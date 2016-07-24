@@ -3,10 +3,12 @@ package com.github.pirent.ui;
 import javax.swing.table.AbstractTableModel;
 
 import com.github.pirent.Column;
+import com.github.pirent.SniperListener;
 import com.github.pirent.SniperSnapshot;
 import com.github.pirent.SniperState;
 
-public class SnipersTableModel extends AbstractTableModel {
+public class SnipersTableModel extends AbstractTableModel implements
+		SniperListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
@@ -35,8 +37,14 @@ public class SnipersTableModel extends AbstractTableModel {
 		return STATUS_TEXT[sniperState.ordinal()];
 	}
 
+	@Override
 	public void sniperStateChanged(SniperSnapshot newSnapshot) {
 		this.snapshot = newSnapshot;
 		fireTableRowsUpdated(0, 0);
+	}
+
+	@Override
+	public String getColumnName(int column) {
+		return Column.at(column).name;
 	}
 }
