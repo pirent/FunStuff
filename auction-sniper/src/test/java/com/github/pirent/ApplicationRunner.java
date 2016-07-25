@@ -1,7 +1,11 @@
 package com.github.pirent;
 
+import static com.github.pirent.SniperState.JOINING;
+import static com.github.pirent.ui.SnipersTableModel.textFor;
+
 import com.github.pirent.mock.FakeAuctionServer;
 import com.github.pirent.ui.MainWindow;
+import com.github.pirent.ui.SnipersTableModel;
 import com.objogate.wl.swing.driver.ComponentDriver;
 
 /**
@@ -28,10 +32,8 @@ public class ApplicationRunner {
 	public static final String XMPP_HOSTNAME = "localhost";
 	public static final String SNIPER_XMPP_ID = "sniper@127.0.0.1/Auction";
 	private AuctionSniperDriver driver;
-	private String itemId;
 	
-	public void startBiddingIn(final FakeAuctionServer auction) {
-		this.itemId = auction.getItemId();
+	public void startBiddingIn(final FakeAuctionServer... auctions) {
 		
 		// WindowLicker can control Swing components if they're in the same JVM
 		// so we start the Sniper in the new thread
@@ -41,8 +43,7 @@ public class ApplicationRunner {
 			public void run() {
 				try {
 					// Call the application through its main() function
-					Main.main(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD,
-							auction.getItemId().toString());
+					Main.main(arguments(auctions));
 				}
 				catch (Exception e) {
 					// Later development stage will handle exceptions properly
@@ -59,16 +60,26 @@ public class ApplicationRunner {
 		// One second will be enough to smooth over minor runtime delays
 		driver = new AuctionSniperDriver(1000);
 		
+		driver.hasTitle(MainWindow.APPLICATION_TITLE);
+		driver.hasColumnTitles();
+		
 		// Wait for the status to change to Joining
 		// This assertion says that somewhere in the user interface. there is a label
 		// that describes the Sniper's state
-		// FIXME: have no idea what is the input for the last price and last bid
-		driver.showSniperStatus(itemId, -1, -1, Main.STATUS_JOINING);
+		for (FakeAuctionServer auction : auctions) {
+			driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
+		}
 	}
 
-	public void showSniperHasLostAuction() {
-		// FIXME: have no idea what is the input for the last price and last bid
-		driver.showSniperStatus(itemId, -1, -1, Main.STATUS_LOST);
+	protected static String[] arguments(FakeAuctionServer[] auctions) {
+		String[] arguments = new String[auctions.length + 3];
+		arguments[0] = XMPP_HOSTNAME;
+		arguments[1] = SNIPER_ID;
+		arguments[2] = SNIPER_PASSWORD;
+		for (int i = 0; i < auctions.length; i++) {
+			arguments[i + 3] = auctions[i].getItemId();
+		}
+		return arguments;
 	}
 
 	public void stop() {
@@ -78,17 +89,25 @@ public class ApplicationRunner {
 			driver.dispose();
 		}
 	}
-
-	public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-		driver.showSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
+	
+	public void hasShownSniperIsBidding(FakeAuctionServer auction, int lastPrice, int lastBid) {
+		driver.showSniperStatus(auction.getItemId(), lastPrice, lastBid,
+				SnipersTableModel.textFor(SniperState.BIDDING));
 	}
 
-	public void hasShownSniperIsWinning(int winningBid) {
-		driver.showSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
+	public void hasShownSniperIsWinning(FakeAuctionServer auction, int winningBid) {
+		driver.showSniperStatus(auction.getItemId(), winningBid, winningBid,
+				SnipersTableModel.textFor(SniperState.WINNING));
 	}
 
-	public void showsSniperHasWonAuction(int lastPrice) {
-		driver.showSniperStatus(itemId, lastPrice, lastPrice, MainWindow.STATUS_WON);
+	public void showsSniperHasLostAuction(FakeAuctionServer auction, int lastPrice, int lastBid) {
+		driver.showSniperStatus(auction.getItemId(), lastPrice, lastBid,
+				SnipersTableModel.textFor(SniperState.LOST));
+	}
+	
+	public void showsSniperHasWonAuction(FakeAuctionServer auction, int lastPrice) {
+		driver.showSniperStatus(auction.getItemId(), lastPrice, lastPrice,
+				SnipersTableModel.textFor(SniperState.WON));
 	}
 
 }

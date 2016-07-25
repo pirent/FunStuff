@@ -1,14 +1,13 @@
 package com.github.pirent.mock;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -45,9 +44,7 @@ public class SingleMessageListener implements MessageListener {
 	 */
 	public void receiveAMessage(Matcher<? super String> messageMatcher) throws InterruptedException {
 		final Message message = messages.poll(5, SECONDS);
-		assertThat("Message is not recevied within timeout period",
-				message, is(notNullValue()));
-		assertThat("Message does not match", message.getBody(), messageMatcher);
+		assertThat(message, Matchers.hasProperty("body", messageMatcher));
 	}
 
 }

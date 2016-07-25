@@ -19,6 +19,7 @@ public class AuctionSniperEndToEndTest {
 	 */
 	
 	private final FakeAuctionServer auction = new FakeAuctionServer("item-54321");
+	private final FakeAuctionServer auction2 = new FakeAuctionServer("item-65432");
 	
 	private final ApplicationRunner application = new ApplicationRunner();
 	
@@ -28,7 +29,7 @@ public class AuctionSniperEndToEndTest {
 		application.startBiddingIn(auction);
 		auction.hasReceivedJoinRequestFromSniper(ApplicationRunner.SNIPER_XMPP_ID);
 		auction.announceClosed();
-		application.showSniperHasLostAuction();
+		application.showsSniperHasLostAuction(auction, 0, 0);
 	}
 	
 	@Test
@@ -44,14 +45,14 @@ public class AuctionSniperEndToEndTest {
 		// Tell the stub auction to send message back to Sniper with the news about price
 		auction.reportPrice(1000, 98, "other bidder");
 		// Check if Sniper shows that it's now bidding after receiving the price update msg
-		application.hasShownSniperIsBidding(1000, 1098);
+		application.hasShownSniperIsBidding(auction, 1000, 1098);
 		
 		// Tell the stub auction to check that it has received a bid from the Sniper
 		// that is equal to the last price plus the minimum increment
 		auction.hasReceiveBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
 		
 		auction.announceClosed();
-		application.showSniperHasLostAuction();
+		application.showsSniperHasLostAuction(auction, 1000, 1098);
 	}
 	
 	@Test
@@ -63,17 +64,45 @@ public class AuctionSniperEndToEndTest {
 		
 		auction.reportPrice(1000, 98, "other bidder");
 		// last price, last bid
-		application.hasShownSniperIsBidding(1000, 1098);
+		application.hasShownSniperIsBidding(auction, 1000, 1098);
 	
 		auction.hasReceiveBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
 		
 		auction.reportPrice(1098, 97, ApplicationRunner.SNIPER_XMPP_ID);
 		// winning bid
-		application.hasShownSniperIsWinning(1098);
+		application.hasShownSniperIsWinning(auction, 1098);
 		
 		auction.announceClosed();
 		// last price
-		application.showsSniperHasWonAuction(1098);
+		application.showsSniperHasWonAuction(auction, 1098);
+	}
+	
+	@Test
+	public void sniperBidsForMultopleItems() throws Exception {
+		auction.startSellingItem();
+		auction2.startSellingItem();
+		
+		application.startBiddingIn(auction, auction2);
+		auction.hasReceivedJoinRequestFromSniper(ApplicationRunner.SNIPER_XMPP_ID);
+		auction2.hasReceivedJoinRequestFromSniper(ApplicationRunner.SNIPER_XMPP_ID);
+		
+		auction.reportPrice(1000, 98, "other bidder");
+		auction.hasReceiveBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
+		
+		auction2.reportPrice(500, 21, "other bidder");
+		auction2.hasReceiveBid(521, ApplicationRunner.SNIPER_XMPP_ID);
+		
+		auction.reportPrice(1098, 97, ApplicationRunner.SNIPER_XMPP_ID);
+		auction2.reportPrice(521, 22, ApplicationRunner.SNIPER_XMPP_ID);
+		
+		application.hasShownSniperIsWinning(auction, 1098);
+		application.hasShownSniperIsWinning(auction2, 521);
+		
+		auction.announceClosed();
+		auction2.announceClosed();
+		
+		application.showsSniperHasWonAuction(auction, 1098);
+		application.showsSniperHasWonAuction(auction2, 521);
 	}
 	
 	@After
