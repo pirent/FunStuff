@@ -80,7 +80,7 @@ public class SniperSnapshot {
 				+ ", lastBid=" + lastBid + ", sniperState=" + sniperState + "]";
 	}
 
-	public static SniperSnapshot join(String itemId) {
+	public static SniperSnapshot joining(String itemId) {
 		return new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
 	}
 
@@ -98,4 +98,12 @@ public class SniperSnapshot {
 		return new SniperSnapshot(itemId, lastPrice, lastBid, sniperState.whenAuctionClosed());
 	}
 
+	/**
+	 * Deciding whether it's referring to the same item via identifier
+	 * 
+	 * @return
+	 */
+	public boolean isForSameItemAs(SniperSnapshot otherSnapshot) {
+		return this.itemId.equals(otherSnapshot.getItemId());
+	}
 }

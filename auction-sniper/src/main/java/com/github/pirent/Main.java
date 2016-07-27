@@ -28,14 +28,12 @@ public class Main {
 	private static final int ARG_HOSTNAME = 0;
 	private static final int ARG_USERNAME = 1;
 	private static final int ARG_PASSWORD = 2;
-	private static final int ARG_ITEM_ID = 3;
 	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
 	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Event: BID; Price: %d";
 
 	private final SnipersTableModel sniperListener = new SnipersTableModel();
 	private MainWindow ui;
 	
-	@SuppressWarnings("unused")
 	/**
 	 * To make sure the chat is not garbage-collected by the Java runtime.
 	 * For application specific purpose.
@@ -47,7 +45,10 @@ public class Main {
 		XMPPConnection connection = connection(args[ARG_HOSTNAME],
 				args[ARG_USERNAME], args[ARG_PASSWORD]);
 		main.disconnectWhenUICloses(connection);
-		main.joinAuction(connection, args[ARG_ITEM_ID]);
+		
+		for (int i = 3; i < args.length; i++) {
+			main.joinAuction(connection, args[i]);
+		}
 	}
 
 	private static XMPPConnection connection(String hostname, String username,
@@ -78,7 +79,9 @@ public class Main {
 		});
 	}
 	
-	private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
+	private void joinAuction(XMPPConnection connection, String itemId) throws Exception {
+		safelyAddItemToModel(itemId);
+		
 		Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection), null);
 		
 		notToBeGCd.add(chat);
@@ -89,6 +92,19 @@ public class Main {
 				new SwingThreadSniperListener(sniperListener))));
 		
 		auction.join();
+	}
+
+	private void safelyAddItemToModel(final String itemId) throws Exception {
+		// We have to wrap the call in an invokeAndWait()
+		// because it's changing the state of the user interface
+		// from outside the Swing thread
+		SwingUtilities.invokeAndWait(new Runnable() {
+			
+			@Override
+			public void run() {
+				sniperListener.addSniper(SniperSnapshot.joining(itemId));
+			}
+		});
 	}
 
 	private void disconnectWhenUICloses(final XMPPConnection connection) {
