@@ -30,7 +30,7 @@ import com.github.pirent.Main;
  */
 public class FakeAuctionServer {
 
-	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
+	public static final String ITEM_ID_AS_LOGIN = "auction-item-%s";
 	public static final String AUCTION_RESOURCE = "Auction";
 	public static final String XMPP_HOSTNAME = "localhost";
 	public static final String AUCTION_PASSWORD = "auction";

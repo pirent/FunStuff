@@ -18,8 +18,8 @@ public class AuctionSniperEndToEndTest {
 	 * event to wake the application for the next step.
 	 */
 	
-	private final FakeAuctionServer auction = new FakeAuctionServer("item-54321");
-	private final FakeAuctionServer auction2 = new FakeAuctionServer("item-65432");
+	private final FakeAuctionServer auction = new FakeAuctionServer("54321");
+	private final FakeAuctionServer auction2 = new FakeAuctionServer("65432");
 	
 	private final ApplicationRunner application = new ApplicationRunner();
 	

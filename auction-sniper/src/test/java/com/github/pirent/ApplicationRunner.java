@@ -3,6 +3,8 @@ package com.github.pirent;
 import static com.github.pirent.SniperState.JOINING;
 import static com.github.pirent.ui.SnipersTableModel.textFor;
 
+import java.util.logging.Logger;
+
 import com.github.pirent.mock.FakeAuctionServer;
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.SnipersTableModel;
@@ -31,10 +33,27 @@ public class ApplicationRunner {
 	public static final String SNIPER_PASSWORD = "sniper";
 	public static final String XMPP_HOSTNAME = "localhost";
 	public static final String SNIPER_XMPP_ID = "sniper@127.0.0.1/Auction";
+	
+	private static final Logger LOGGER = Logger.getLogger(ApplicationRunner.class.getSimpleName());;
+	
 	private AuctionSniperDriver driver;
 	
 	public void startBiddingIn(final FakeAuctionServer... auctions) {
+		startSniper(auctions);
 		
+		for (FakeAuctionServer auction : auctions) {
+			final String itemId = auction.getItemId();
+			driver.startBiddingFor(itemId);
+			LOGGER.info("after driver.startBidding()");
+			
+			// Wait for the status to change to Joining
+			// This assertion says that somewhere in the user interface. there is a label
+			// that describes the Sniper's state
+			driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
+		}
+	}
+	
+	private void startSniper(final FakeAuctionServer... auctions) {
 		// WindowLicker can control Swing components if they're in the same JVM
 		// so we start the Sniper in the new thread
 		Thread thread = new Thread("Test Application") {
@@ -62,13 +81,6 @@ public class ApplicationRunner {
 		
 		driver.hasTitle(MainWindow.APPLICATION_TITLE);
 		driver.hasColumnTitles();
-		
-		// Wait for the status to change to Joining
-		// This assertion says that somewhere in the user interface. there is a label
-		// that describes the Sniper's state
-		for (FakeAuctionServer auction : auctions) {
-			driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
-		}
 	}
 
 	protected static String[] arguments(FakeAuctionServer[] auctions) {

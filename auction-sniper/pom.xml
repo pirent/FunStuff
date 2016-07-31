@@ -41,28 +41,48 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.8.5</version>
+      <version>1.9.0-rc1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-integration</artifactId>
-      <version>1.1</version>
+      <version>1.3.RC2</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
     	<groupId>com.googlecode.windowlicker</groupId>
     	<artifactId>windowlicker-swing</artifactId>
     	<version>r268</version>
+    	<scope>test</scope>
     </dependency>
     <dependency>
     	<groupId>com.googlecode.windowlicker</groupId>
     	<artifactId>windowlicker-core</artifactId>
     	<version>r268</version>
+    	<exclusions>
+    		<exclusion>
+    			<groupId>org.hamcrest</groupId>
+    			<artifactId>hamcrest-all</artifactId>
+    		</exclusion>
+    	</exclusions>
+    	<scope>test</scope>
     </dependency>
     <dependency>
     	<groupId>org.igniterealtime.smack</groupId>
     	<artifactId>smack</artifactId>
     	<version>3.1.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.hamcrest</groupId>
+    	<artifactId>hamcrest-core</artifactId>
+    	<version>1.3.RC2</version>
+    	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-lang3</artifactId>
+    	<version>3.1</version>
     </dependency>
   </dependencies>
   <description>A place where I try to mimic step-by-step the example from book &quot;Growing Object-Oriented Software, Guided by Tests&quot; - Steve Freeman &amp; Nat Pryce.
