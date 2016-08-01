@@ -13,4 +13,6 @@ public interface Auction {
 
 	public void join();
 
+	void addAuctionEventListener(AuctionEventListener auctionSniper);
+
 }

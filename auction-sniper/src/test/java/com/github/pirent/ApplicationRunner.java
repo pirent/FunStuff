@@ -33,8 +33,9 @@ public class ApplicationRunner {
 	public static final String SNIPER_PASSWORD = "sniper";
 	public static final String XMPP_HOSTNAME = "localhost";
 	public static final String SNIPER_XMPP_ID = "sniper@127.0.0.1/Auction";
+	public static final String AUCTION_RESOURCE = "Auction";
 	
-	private static final Logger LOGGER = Logger.getLogger(ApplicationRunner.class.getSimpleName());;
+	private static final Logger LOGGER = Logger.getLogger(ApplicationRunner.class.getSimpleName());
 	
 	private AuctionSniperDriver driver;
 	

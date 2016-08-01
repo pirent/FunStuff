@@ -1,4 +1,4 @@
-package com.github.pirent;
+package com.github.pirent.xmpp;
 
 import static com.github.pirent.AuctionEventListener.PriceSource.FROM_OTHER_SNIPPER;
 import static com.github.pirent.AuctionEventListener.PriceSource.FROM_SNIPER;
@@ -10,6 +10,7 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 
+import com.github.pirent.AuctionEventListener;
 import com.github.pirent.AuctionEventListener.PriceSource;
 
 /**

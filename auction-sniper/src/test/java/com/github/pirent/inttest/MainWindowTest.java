@@ -1,9 +1,10 @@
-package com.github.pirent;
+package com.github.pirent.inttest;
 
 import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.Test;
 
+import com.github.pirent.AuctionSniperDriver;
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.SnipersTableModel;
 import com.github.pirent.ui.UserRequestListener;

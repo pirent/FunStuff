@@ -14,8 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import com.github.pirent.Announcer;
 import com.github.pirent.SniperSnapshot;
+import com.github.pirent.util.Announcer;
 
 public class MainWindow extends JFrame {
 
