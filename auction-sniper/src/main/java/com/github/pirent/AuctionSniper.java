@@ -2,29 +2,24 @@ package com.github.pirent;
 
 public class AuctionSniper implements AuctionEventListener {
 
-	private final SniperListener sniperListener;
+	private SniperListener sniperListener;
 	private final Auction auction;
 	
 	private SniperSnapshot snapshot;
 	
-	public AuctionSniper(String itemId, Auction auction, SniperListener sniperListener) {
+	public AuctionSniper(String itemId, Auction auction) {
 		this.auction = auction;
-		this.sniperListener = sniperListener;
 		this.snapshot = SniperSnapshot.joining(itemId);
 	}
-
-	public AuctionSniper(String itemId, Auction auction2) {
-		// TODO Auto-generated constructor stub
+	
+	public void addSniperListener(SniperListener sniperListener) {
+		this.sniperListener = sniperListener;
 	}
 
 	@Override
 	public void auctionClosed() {
 		snapshot = snapshot.closed();
 		notifyChange();
-	}
-
-	private void notifyChange() {
-		sniperListener.sniperStateChanged(snapshot);
 	}
 
 	@Override
@@ -40,6 +35,14 @@ public class AuctionSniper implements AuctionEventListener {
 				break;
 		}
 		notifyChange();
+	}
+	
+	private void notifyChange() {
+		sniperListener.sniperStateChanged(snapshot);
+	}
+
+	public SniperSnapshot getSnapshot() {
+		return snapshot;
 	}
 
 }

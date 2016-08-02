@@ -1,10 +1,5 @@
 package com.github.pirent;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.SwingUtilities;
-
 import com.github.pirent.ui.UserRequestListener;
 
 public class SniperLauncher implements UserRequestListener {
@@ -29,31 +24,4 @@ public class SniperLauncher implements UserRequestListener {
 		auction.join();
 	}
 
-	/**
-	 * A Decorator to start {@link SniperListener} in a new Swing thread
-	 * 
-	 * @author pirent
-	 *
-	 */
-	public class SwingThreadSniperListener implements SniperListener {
-
-		private final SniperListener sniperListener;
-
-		public SwingThreadSniperListener(SniperListener sniperListener) {
-			super();
-			this.sniperListener = sniperListener;
-		}
-
-		@Override
-		public void sniperStateChanged(final SniperSnapshot sniperSnapshot) {
-			SwingUtilities.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					sniperListener.sniperStateChanged(sniperSnapshot);
-				}
-			});
-		}
-
-	}
 }

@@ -2,14 +2,11 @@ package com.github.pirent;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.swing.SwingUtilities;
 
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.SnipersTableModel;
-import com.github.pirent.ui.UserRequestListener;
 
 public class Main {
 
@@ -26,12 +23,6 @@ public class Main {
 
 	private final SnipersTableModel sniperListener = new SnipersTableModel();
 	private MainWindow ui;
-
-	/**
-	 * To make sure the chat is not garbage-collected by the Java runtime. For
-	 * application specific purpose.
-	 */
-	private Collection<Auction> notToBeGCd = new ArrayList<Auction>();
 
 	public static void main(String... args) throws Exception {
 		Main main = new Main();
