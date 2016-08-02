@@ -13,6 +13,10 @@ public class AuctionSniper implements AuctionEventListener {
 		this.snapshot = SniperSnapshot.joining(itemId);
 	}
 
+	public AuctionSniper(String itemId, Auction auction2) {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void auctionClosed() {
 		snapshot = snapshot.closed();
