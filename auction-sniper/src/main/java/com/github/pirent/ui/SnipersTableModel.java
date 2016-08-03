@@ -1,7 +1,6 @@
 package com.github.pirent.ui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -10,13 +9,13 @@ import javax.swing.table.AbstractTableModel;
 import com.github.pirent.AuctionSniper;
 import com.github.pirent.Column;
 import com.github.pirent.Defect;
-import com.github.pirent.SniperCollector;
+import com.github.pirent.PortfolioListener;
 import com.github.pirent.SniperListener;
 import com.github.pirent.SniperSnapshot;
 import com.github.pirent.SniperState;
 
 public class SnipersTableModel extends AbstractTableModel implements
-		SniperListener, SniperCollector {
+		SniperListener, PortfolioListener {
 
 	private static final long serialVersionUID = 1L;
 	private static final String[] STATUS_TEXT = {
@@ -24,12 +23,6 @@ public class SnipersTableModel extends AbstractTableModel implements
 	};
 	
 	private final List<SniperSnapshot> snapshots = new ArrayList<SniperSnapshot>();
-	
-	/**
-	 * To make sure the chat is not garbage-collected by the Java runtime. For
-	 * application specific purpose.
-	 */
-	private final Collection<AuctionSniper> notToBeGCd = new ArrayList<AuctionSniper>();
 	
 	@Override
 	public int getRowCount() {
@@ -77,10 +70,9 @@ public class SnipersTableModel extends AbstractTableModel implements
 		int rowToBeInserted = snapshots.size();
 		fireTableRowsInserted(rowToBeInserted, rowToBeInserted);
 	}
-
+	
 	@Override
-	public void addSniper(AuctionSniper sniper) {
-		notToBeGCd.add(sniper);
+	public void sniperAdded(AuctionSniper sniper) {
 		addSniperSnapshot(sniper.getSnapshot());
 		sniper.addSniperListener(new SwingThreadSniperListener(this));
 	}

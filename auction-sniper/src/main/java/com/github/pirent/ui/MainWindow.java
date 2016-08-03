@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import com.github.pirent.SniperSnapshot;
+import com.github.pirent.SniperPortfolio;
 import com.github.pirent.util.Announcer;
 
 public class MainWindow extends JFrame {
@@ -30,20 +30,33 @@ public class MainWindow extends JFrame {
 	
 	private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getSimpleName());
 	
-	private final SnipersTableModel snipers;
-	
 	private final Announcer<UserRequestListener> userRequests = Announcer.to(UserRequestListener.class);
-	
-	public MainWindow(SnipersTableModel snipers) {
+
+	public MainWindow(SniperPortfolio portfolio) {
 		super(APPLICATION_TITLE);
-		this.snipers = snipers;
 		setName(MAIN_WINDOW_NAME);
-		fillContentPane(makeSniperTable(), makeControls());
+		fillContentPane(makeSnipersTable(portfolio), makeControls());
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
+	private void fillContentPane(JTable snipersTable, JPanel controls) {
+		final Container contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
+		
+		contentPane.add(controls, BorderLayout.NORTH);
+		contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
+	}
+
+	private JTable makeSnipersTable(SniperPortfolio portfolio) {
+		SnipersTableModel model = new SnipersTableModel();
+		portfolio.addPortfolioListener(model);
+		final JTable snipersTable = new JTable(model);
+		snipersTable.setName(SNIPERS_TABLE_NAME);
+		return snipersTable;
+	}
+	
 	private JPanel makeControls() {
 		JPanel controls = new JPanel(new FlowLayout());
 		
@@ -66,24 +79,6 @@ public class MainWindow extends JFrame {
 		});
 		
 		return controls;
-	}
-
-	private void fillContentPane(JTable snipersTable, JPanel controls) {
-		final Container contentPane = getContentPane();
-		contentPane.setLayout(new BorderLayout());
-		
-		contentPane.add(controls, BorderLayout.NORTH);
-		contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
-	}
-
-	private JTable makeSniperTable() {
-		final JTable snipersTable = new JTable(snipers);
-		snipersTable.setName(SNIPERS_TABLE_NAME);
-		return snipersTable;
-	}
-
-	public void sniperStateChanged(SniperSnapshot sniperState) {
-		snipers.sniperStateChanged(sniperState);
 	}
 
 	public void addUserRequestListener(UserRequestListener userRequestListener) {

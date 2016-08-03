@@ -5,15 +5,14 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.Test;
 
 import com.github.pirent.AuctionSniperDriver;
+import com.github.pirent.SniperPortfolio;
 import com.github.pirent.ui.MainWindow;
-import com.github.pirent.ui.SnipersTableModel;
 import com.github.pirent.ui.UserRequestListener;
 import com.objogate.wl.swing.probe.ValueMatcherProbe;
 
 public class MainWindowTest {
 
-	private final SnipersTableModel tableModel = new SnipersTableModel();
-	private final MainWindow mainWindow = new MainWindow(tableModel);
+	private final MainWindow mainWindow = new MainWindow(new SniperPortfolio());
 	private final AuctionSniperDriver driver = new AuctionSniperDriver(200);
 	
 	@Test

@@ -1,10 +1,11 @@
 package com.github.pirent;
 
+import com.github.pirent.util.Announcer;
+
 public class AuctionSniper implements AuctionEventListener {
 
-	private SniperListener sniperListener;
-	private final Auction auction;
-	
+	private final Announcer<SniperListener> announcer = Announcer.to(SniperListener.class);
+	private Auction auction;
 	private SniperSnapshot snapshot;
 	
 	public AuctionSniper(String itemId, Auction auction) {
@@ -13,7 +14,7 @@ public class AuctionSniper implements AuctionEventListener {
 	}
 	
 	public void addSniperListener(SniperListener sniperListener) {
-		this.sniperListener = sniperListener;
+		announcer.addListener(sniperListener);
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class AuctionSniper implements AuctionEventListener {
 	}
 	
 	private void notifyChange() {
-		sniperListener.sniperStateChanged(snapshot);
+		announcer.announce().sniperStateChanged(snapshot);
 	}
 
 	public SniperSnapshot getSnapshot() {
