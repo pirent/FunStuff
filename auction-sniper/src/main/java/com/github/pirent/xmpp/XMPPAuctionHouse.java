@@ -1,8 +1,10 @@
-package com.github.pirent;
+package com.github.pirent.xmpp;
 
 import org.jivesoftware.smack.XMPPConnection;
 
-import com.github.pirent.xmpp.XMPPAuction;
+import com.github.pirent.Auction;
+import com.github.pirent.AuctionHouse;
+import com.github.pirent.Item;
 
 public class XMPPAuctionHouse implements AuctionHouse {
 

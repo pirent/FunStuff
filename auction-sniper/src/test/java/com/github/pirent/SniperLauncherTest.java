@@ -15,6 +15,10 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.github.pirent.auctionsniper.AuctionSniper;
+import com.github.pirent.auctionsniper.SniperCollector;
+import com.github.pirent.auctionsniper.SniperLauncher;
+
 @RunWith(MockitoJUnitRunner.class)
 public class SniperLauncherTest {
 

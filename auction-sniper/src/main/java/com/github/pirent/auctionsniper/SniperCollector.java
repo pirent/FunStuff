@@ -1,4 +1,5 @@
-package com.github.pirent;
+package com.github.pirent.auctionsniper;
+
 
 public interface SniperCollector {
 

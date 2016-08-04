@@ -10,6 +10,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import com.github.pirent.Auction;
 import com.github.pirent.AuctionEventListener;
+import com.github.pirent.AuctionMessageTranslator;
 import com.github.pirent.Main;
 import com.github.pirent.util.Announcer;
 

@@ -1,4 +1,4 @@
-package com.github.pirent;
+package com.github.pirent.auctionsniper;
 
 import java.util.EventListener;
 

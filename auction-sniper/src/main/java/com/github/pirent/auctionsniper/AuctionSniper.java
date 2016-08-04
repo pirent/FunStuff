@@ -1,5 +1,9 @@
-package com.github.pirent;
+package com.github.pirent.auctionsniper;
 
+import com.github.pirent.Auction;
+import com.github.pirent.AuctionEventListener;
+import com.github.pirent.Item;
+import com.github.pirent.AuctionEventListener.PriceSource;
 import com.github.pirent.util.Announcer;
 
 public class AuctionSniper implements AuctionEventListener {

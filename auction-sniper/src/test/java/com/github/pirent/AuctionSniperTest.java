@@ -17,6 +17,10 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.github.pirent.AuctionEventListener.PriceSource;
+import com.github.pirent.auctionsniper.AuctionSniper;
+import com.github.pirent.auctionsniper.SniperListener;
+import com.github.pirent.auctionsniper.SniperSnapshot;
+import com.github.pirent.auctionsniper.SniperState;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuctionSniperTest {

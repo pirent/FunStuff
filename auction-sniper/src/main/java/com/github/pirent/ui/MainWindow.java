@@ -18,7 +18,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import com.github.pirent.Item;
-import com.github.pirent.SniperPortfolio;
+import com.github.pirent.auctionsniper.SniperPortfolio;
 import com.github.pirent.util.Announcer;
 
 public class MainWindow extends JFrame {

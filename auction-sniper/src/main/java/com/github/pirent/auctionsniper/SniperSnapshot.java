@@ -1,4 +1,6 @@
-package com.github.pirent;
+package com.github.pirent.auctionsniper;
+
+import com.github.pirent.Item;
 
 /**
  * A description of the Sniper's relationship with the auction at this moment in time.

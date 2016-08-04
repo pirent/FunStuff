@@ -1,4 +1,4 @@
-package com.github.pirent.xmpp;
+package com.github.pirent;
 
 import static com.github.pirent.AuctionEventListener.PriceSource.FROM_OTHER_SNIPPER;
 import static com.github.pirent.AuctionEventListener.PriceSource.FROM_SNIPER;
@@ -9,9 +9,6 @@ import java.util.Map;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
-
-import com.github.pirent.AuctionEventListener;
-import com.github.pirent.AuctionEventListener.PriceSource;
 
 /**
  * When it receives a raw message from the auction, translates it into something

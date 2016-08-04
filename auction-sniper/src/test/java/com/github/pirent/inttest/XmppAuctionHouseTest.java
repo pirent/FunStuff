@@ -14,8 +14,8 @@ import com.github.pirent.ApplicationRunner;
 import com.github.pirent.Auction;
 import com.github.pirent.AuctionEventListener;
 import com.github.pirent.Item;
-import com.github.pirent.XMPPAuctionHouse;
 import com.github.pirent.mock.FakeAuctionServer;
+import com.github.pirent.xmpp.XMPPAuctionHouse;
 
 public class XmppAuctionHouseTest {
 

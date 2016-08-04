@@ -1,6 +1,6 @@
-package com.github.pirent;
+package com.github.pirent.ui;
 
-import com.github.pirent.ui.SnipersTableModel;
+import com.github.pirent.auctionsniper.SniperSnapshot;
 
 /**
  * Represent column in the sniper table

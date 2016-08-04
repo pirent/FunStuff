@@ -6,13 +6,12 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
-import com.github.pirent.AuctionSniper;
-import com.github.pirent.Column;
 import com.github.pirent.Defect;
-import com.github.pirent.PortfolioListener;
-import com.github.pirent.SniperListener;
-import com.github.pirent.SniperSnapshot;
-import com.github.pirent.SniperState;
+import com.github.pirent.auctionsniper.AuctionSniper;
+import com.github.pirent.auctionsniper.PortfolioListener;
+import com.github.pirent.auctionsniper.SniperListener;
+import com.github.pirent.auctionsniper.SniperSnapshot;
+import com.github.pirent.auctionsniper.SniperState;
 
 public class SnipersTableModel extends AbstractTableModel implements
 		SniperListener, PortfolioListener {

@@ -5,7 +5,10 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.SwingUtilities;
 
+import com.github.pirent.auctionsniper.SniperLauncher;
+import com.github.pirent.auctionsniper.SniperPortfolio;
 import com.github.pirent.ui.MainWindow;
+import com.github.pirent.xmpp.XMPPAuctionHouse;
 
 public class Main {
 

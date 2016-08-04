@@ -21,6 +21,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.github.pirent.auctionsniper.SniperSnapshot;
+import com.github.pirent.ui.Column;
 import com.github.pirent.ui.SnipersTableModel;
 
 @RunWith(MockitoJUnitRunner.class)

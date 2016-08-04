@@ -1,4 +1,6 @@
-package com.github.pirent;
+package com.github.pirent.auctionsniper;
+
+import com.github.pirent.Defect;
 
 public enum SniperState {
 	JOINING {

@@ -1,8 +1,9 @@
 package com.github.pirent;
 
-import static com.github.pirent.SniperState.JOINING;
+import static com.github.pirent.auctionsniper.SniperState.JOINING;
 import static com.github.pirent.ui.SnipersTableModel.textFor;
 
+import com.github.pirent.auctionsniper.SniperState;
 import com.github.pirent.mock.FakeAuctionServer;
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.SnipersTableModel;

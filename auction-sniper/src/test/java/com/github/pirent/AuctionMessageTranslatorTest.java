@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.github.pirent.AuctionEventListener.PriceSource;
-import com.github.pirent.xmpp.AuctionMessageTranslator;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuctionMessageTranslatorTest {

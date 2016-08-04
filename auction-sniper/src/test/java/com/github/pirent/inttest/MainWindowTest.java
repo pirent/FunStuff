@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.github.pirent.AuctionSniperDriver;
 import com.github.pirent.Item;
-import com.github.pirent.SniperPortfolio;
+import com.github.pirent.auctionsniper.SniperPortfolio;
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.UserRequestListener;
 import com.objogate.wl.swing.probe.ValueMatcherProbe;

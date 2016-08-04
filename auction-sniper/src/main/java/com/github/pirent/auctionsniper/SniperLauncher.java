@@ -1,5 +1,8 @@
-package com.github.pirent;
+package com.github.pirent.auctionsniper;
 
+import com.github.pirent.Auction;
+import com.github.pirent.AuctionHouse;
+import com.github.pirent.Item;
 import com.github.pirent.ui.UserRequestListener;
 
 public class SniperLauncher implements UserRequestListener {
