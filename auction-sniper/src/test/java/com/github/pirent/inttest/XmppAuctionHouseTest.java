@@ -13,12 +13,14 @@ import org.junit.Test;
 import com.github.pirent.ApplicationRunner;
 import com.github.pirent.Auction;
 import com.github.pirent.AuctionEventListener;
+import com.github.pirent.Item;
 import com.github.pirent.XMPPAuctionHouse;
 import com.github.pirent.mock.FakeAuctionServer;
 
 public class XmppAuctionHouseTest {
 
-	private FakeAuctionServer auctionServer = new FakeAuctionServer("54321");
+	private static final Item ITEM = new Item("54321", Integer.MAX_VALUE);
+	private final FakeAuctionServer auctionServer = new FakeAuctionServer(ITEM.identifier);
 	private XMPPAuctionHouse auctionHouse;
 	
 	@Before
@@ -49,7 +51,7 @@ public class XmppAuctionHouseTest {
 	public void receivesEventsFromAuctionServerAfterJoining() throws Exception {
 		CountDownLatch auctionWasClosed = new CountDownLatch(1);
 		
-		Auction auction = auctionHouse.auctionFor(auctionServer.getItemId()); 
+		Auction auction = auctionHouse.auctionFor(ITEM); 
 				
 		auction.addAuctionEventListener(auctionClosedListener(auctionWasClosed));
 		

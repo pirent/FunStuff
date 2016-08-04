@@ -39,35 +39,35 @@ public class SniperLauncherTest {
 		// To confirm one behavior is that we only join the auction
 		// after everything else is set up.
 		// Given
-		final String itemId = "item 123";
-		when(auctionHouse.auctionFor(itemId)).thenReturn(auction);
+		final Item item = new Item("item 123", Integer.MAX_VALUE);
+		when(auctionHouse.auctionFor(item)).thenReturn(auction);
 		InOrder inOrder = inOrder(auction, sniperCollector);
 		
 		// When
-		testee.joinAuction(itemId);
+		testee.joinAuction(item);
 		
 		// Then
 		
 		inOrder.verify(auction).addAuctionEventListener(
-				argThat(is(sniperForItem(itemId))));
-		inOrder.verify(sniperCollector).addSniper(argThat(is(sniperForItem(itemId))));
+				argThat(is(sniperForItem(item))));
+		inOrder.verify(sniperCollector).addSniper(argThat(is(sniperForItem(item))));
 		inOrder.verify(auction).join();
 	}
 
 	/**
 	 * Return a {@link Matcher} that matches any {@link AuctionSniper}
-	 * associated with the given item identifier.
+	 * associated with the given item.
 	 * 
-	 * @param itemId
+	 * @param item
 	 * @return
 	 */
-	private Matcher<AuctionSniper> sniperForItem(String itemId) {
-		return new FeatureMatcher<AuctionSniper, String>(equalTo(itemId),
+	private Matcher<AuctionSniper> sniperForItem(Item item) {
+		return new FeatureMatcher<AuctionSniper, Item>(equalTo(item),
 				"a sniper that is", "was") {
 
 			@Override
-			protected String featureValueOf(AuctionSniper actual) {
-				return actual.getSnapshot().getItemId();
+			protected Item featureValueOf(AuctionSniper actual) {
+				return actual.getSnapshot().getItem();
 			}
 		};
 	}

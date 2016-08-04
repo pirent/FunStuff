@@ -26,6 +26,9 @@ import com.github.pirent.ui.SnipersTableModel;
 @RunWith(MockitoJUnitRunner.class)
 public class SnipersTableModelTest {
 	
+	private static final Item FIRST_ITEM = new Item("item 0", Integer.MAX_VALUE);
+	private static final Item SECOND_ITEM = new Item("item 1", Integer.MAX_VALUE);
+	
 	@Mock
 	private TableModelListener listener;
 	
@@ -43,7 +46,7 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void setsSniperValuesInColumns() {
-		SniperSnapshot joining = SniperSnapshot.joining("item id");
+		SniperSnapshot joining = SniperSnapshot.joining(FIRST_ITEM);
 		SniperSnapshot bidding = joining.bidding(555, 666);
 		
 		model.addSniper(joining);
@@ -72,7 +75,7 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void notifiesListenersWhenAddingAAsniper() {
-		SniperSnapshot joining = SniperSnapshot.joining("item123");
+		SniperSnapshot joining = SniperSnapshot.joining(FIRST_ITEM);
 		assertThat(model.getRowCount(), is(0));
 		
 		model.addSniper(joining);
@@ -103,8 +106,8 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void holdSnipersInAdditionOrder() {
-		model.addSniper(SniperSnapshot.joining("item 0"));
-		model.addSniper(SniperSnapshot.joining("item 1"));
+		model.addSniper(SniperSnapshot.joining(FIRST_ITEM));
+		model.addSniper(SniperSnapshot.joining(SECOND_ITEM));
 		
 		assertEquals("item 0", cellValue(0, Column.ITEM_IDENTIFIER));
 		assertEquals("item 1", cellValue(1, Column.ITEM_IDENTIFIER));
@@ -116,8 +119,8 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void updatesCorrectRowForSniper() {
-		SniperSnapshot joiningItem0 = SniperSnapshot.joining("item 0");
-		SniperSnapshot joiningItem1 = SniperSnapshot.joining("item 1");
+		SniperSnapshot joiningItem0 = SniperSnapshot.joining(FIRST_ITEM);
+		SniperSnapshot joiningItem1 = SniperSnapshot.joining(SECOND_ITEM);
 		model.addSniper(joiningItem0);
 		model.addSniper(joiningItem1);
 		
@@ -130,8 +133,8 @@ public class SnipersTableModelTest {
 	
 	@Test(expected=Defect.class)
 	public void throwsDefectIfNotExistingSniperForAnUpdate() {
-		SniperSnapshot joiningItem0 = SniperSnapshot.joining("item 0");
-		SniperSnapshot joiningItem1 = SniperSnapshot.joining("item 1");
+		SniperSnapshot joiningItem0 = SniperSnapshot.joining(FIRST_ITEM);
+		SniperSnapshot joiningItem1 = SniperSnapshot.joining(SECOND_ITEM);
 		
 		model.addSniper(joiningItem0);
 		model.sniperStateChanged(joiningItem1.bidding(500, 520));

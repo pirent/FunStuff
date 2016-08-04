@@ -3,8 +3,6 @@ package com.github.pirent;
 import static com.github.pirent.SniperState.JOINING;
 import static com.github.pirent.ui.SnipersTableModel.textFor;
 
-import java.util.logging.Logger;
-
 import com.github.pirent.mock.FakeAuctionServer;
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.SnipersTableModel;
@@ -35,23 +33,31 @@ public class ApplicationRunner {
 	public static final String SNIPER_XMPP_ID = "sniper@127.0.0.1/Auction";
 	public static final String AUCTION_RESOURCE = "Auction";
 	
-	private static final Logger LOGGER = Logger.getLogger(ApplicationRunner.class.getSimpleName());
-	
+	private static final int NO_STOP_PRICE = Integer.MAX_VALUE;
+		
 	private AuctionSniperDriver driver;
 	
 	public void startBiddingIn(final FakeAuctionServer... auctions) {
 		startSniper(auctions);
 		
 		for (FakeAuctionServer auction : auctions) {
-			final String itemId = auction.getItemId();
-			driver.startBiddingFor(itemId);
-			LOGGER.info("after driver.startBidding()");
-			
-			// Wait for the status to change to Joining
-			// This assertion says that somewhere in the user interface. there is a label
-			// that describes the Sniper's state
-			driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
+			startBiddingFor(auction, NO_STOP_PRICE);
 		}
+	}
+	
+	public void startBiddingWithStopPrice(FakeAuctionServer auction, int stopPrice) {
+		startSniper(auction);
+		startBiddingFor(auction, stopPrice);
+	}
+	
+	private void startBiddingFor(FakeAuctionServer auction, int stopPrice) {
+		String itemId = auction.getItemId();
+		driver.startBiddingFor(itemId, stopPrice);
+		
+		// Wait for the status to change to Joining
+		// This assertion says that somewhere in the user interface. there is a label
+		// that describes the Sniper's state
+		driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
 	}
 	
 	private void startSniper(final FakeAuctionServer... auctions) {
@@ -113,6 +119,11 @@ public class ApplicationRunner {
 				SnipersTableModel.textFor(SniperState.WINNING));
 	}
 
+	public void hasShownSniperIsLosing(FakeAuctionServer auction, int lastPrice, int lastBid) {
+		driver.showSniperStatus(auction.getItemId(), lastPrice, lastBid,
+				SnipersTableModel.textFor(SniperState.LOSING));
+	}
+	
 	public void showsSniperHasLostAuction(FakeAuctionServer auction, int lastPrice, int lastBid) {
 		driver.showSniperStatus(auction.getItemId(), lastPrice, lastBid,
 				SnipersTableModel.textFor(SniperState.LOST));

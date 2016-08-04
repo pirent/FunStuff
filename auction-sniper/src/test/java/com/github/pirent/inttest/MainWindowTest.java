@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.Test;
 
 import com.github.pirent.AuctionSniperDriver;
+import com.github.pirent.Item;
 import com.github.pirent.SniperPortfolio;
 import com.github.pirent.ui.MainWindow;
 import com.github.pirent.ui.UserRequestListener;
@@ -22,22 +23,23 @@ public class MainWindowTest {
 		// with the right auction identifier 
 		
 		// A probe is an object that checks for a given state.
-		final ValueMatcherProbe<String> buttonProbe = new ValueMatcherProbe<String>(
-				equalTo("an item id"), "join request");
+		final ValueMatcherProbe<Item> itemProbe = new ValueMatcherProbe<Item>(
+				equalTo(new Item("an item id", 789)), "join request");
 		
 		mainWindow.addUserRequestListener(new UserRequestListener() {
 
 			@Override
-			public void joinAuction(String itemId) {
-				buttonProbe.setReceivedValue(itemId);
+			public void joinAuction(Item item) {
+				itemProbe.setReceivedValue(item);
 			}
 			
 		});
 		
-		driver.startBiddingFor("aan item id");
+		// FIXME: there is a bug here that swallow the first 'a' character
+		driver.startBiddingFor("aan item id", 789);
 		
 		// A driver's check() method repeatedly fires the given probe
 		// until it's satisfied or times out.
-		driver.check(buttonProbe);
+		driver.check(itemProbe);
 	}
 }

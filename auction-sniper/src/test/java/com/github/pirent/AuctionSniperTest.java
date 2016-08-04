@@ -21,7 +21,7 @@ import com.github.pirent.AuctionEventListener.PriceSource;
 @RunWith(MockitoJUnitRunner.class)
 public class AuctionSniperTest {
 
-	private static final String ITEM_ID = "item-5000";
+	private static final Item ITEM = new Item("item-5000", 1234);
 
 	@Mock
 	private Auction auction;
@@ -33,7 +33,7 @@ public class AuctionSniperTest {
 	
 	@Before
 	public void init() {
-		sniper = new AuctionSniper(ITEM_ID, auction);
+		sniper = new AuctionSniper(ITEM, auction);
 		sniper.addSniperListener(sniperListener);
 	}
 	
@@ -58,7 +58,7 @@ public class AuctionSniperTest {
 		// We don't care if the Sniper notifies the listener more than once that it's bidding
 		// it's just a status update, so atLeast(1) is used.
 		verify(sniperListener, atLeast(1)).sniperStateChanged(
-				new SniperSnapshot(ITEM_ID, price, bid, SniperState.BIDDING));
+				new SniperSnapshot(ITEM, price, bid, SniperState.BIDDING));
 	}
 	
 	@Test
@@ -72,10 +72,10 @@ public class AuctionSniperTest {
 		sniper.currentPrice(135, 45, PriceSource.FROM_SNIPER);
 		
 		inOrder.verify(sniperListener, atLeast(1)).sniperStateChanged(
-				new SniperSnapshot(ITEM_ID, 123, 135, SniperState.BIDDING));
+				new SniperSnapshot(ITEM, 123, 135, SniperState.BIDDING));
 			
 		inOrder.verify(sniperListener, atLeast(1)).sniperStateChanged(
-				new SniperSnapshot(ITEM_ID, 135, 135, SniperState.WINNING));
+				new SniperSnapshot(ITEM, 135, 135, SniperState.WINNING));
 	}
 	
 	@Test
@@ -116,6 +116,17 @@ public class AuctionSniperTest {
 				argThat(is(aSniperThatIs(SniperState.WON))));
 	}
 	
+	@Test
+	public void doesNotBidAndReportsLosingIfSubsequentPriceIsAboveTopPrice() {
+		sniper.currentPrice(123, 45, PriceSource.FROM_OTHER_SNIPPER);
+		sniper.currentPrice(2345, 25, PriceSource.FROM_OTHER_SNIPPER);
+		
+		final int bid = 123 + 45;
+		verify(auction).bid(bid);
+		verify(sniperListener, atLeast(1)).sniperStateChanged(
+				new SniperSnapshot(ITEM, 2345, bid, SniperState.LOSING));
+	}
+	
 	/**
 	 * Create a {@link Matcher} to check that a {@link SniperSnapshot}
 	 * has its state match with the provided one.
@@ -124,7 +135,8 @@ public class AuctionSniperTest {
 	 * @return
 	 */
 	private Matcher<SniperSnapshot> aSniperThatIs(final SniperState state) {
-		return new FeatureMatcher<SniperSnapshot, SniperState>(equalTo(state), "sniper that is ", "was") {
+		return new FeatureMatcher<SniperSnapshot, SniperState>(equalTo(state),
+				"sniper that is ", "was") {
 
 			@Override
 			protected SniperState featureValueOf(SniperSnapshot actual) {

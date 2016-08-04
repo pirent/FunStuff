@@ -9,7 +9,7 @@ package com.github.pirent;
  */
 public interface AuctionHouse {
 
-	Auction auctionFor(String itemId);
+	Auction auctionFor(Item item);
 	
 	void disconnect();
 }

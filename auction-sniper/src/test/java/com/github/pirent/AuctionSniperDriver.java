@@ -2,6 +2,7 @@ package com.github.pirent;
 
 import static com.github.pirent.ui.MainWindow.JOIN_BUTTON_NAME;
 import static com.github.pirent.ui.MainWindow.NEW_ITEM_ID_NAME;
+import static com.github.pirent.ui.MainWindow.NEW_ITEM_STOP_PRICE_NAME;
 import static com.objogate.wl.swing.matcher.IterableComponentsMatcher.matching;
 import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
 import static java.lang.String.valueOf;
@@ -57,17 +58,18 @@ public class AuctionSniperDriver extends JFrameDriver {
 				withLabelText("State")));
 	}
 
-	public void startBiddingFor(String itemId) {
-		itemIdField().replaceAllText(itemId);
+	public void startBiddingFor(String itemId, int stopPrice) {
+		textField(NEW_ITEM_ID_NAME).replaceAllText(itemId);
+		textField(NEW_ITEM_STOP_PRICE_NAME).replaceAllText(String.valueOf(stopPrice));
 		bidButton().click();
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	private JTextFieldDriver itemIdField() {
-		JTextFieldDriver newItemId = new JTextFieldDriver(this,
-				JTextField.class, named(NEW_ITEM_ID_NAME));
-		newItemId.focusWithMouse();
-		return newItemId;
+	private JTextFieldDriver textField(String name) {
+		JTextFieldDriver textFieldDriver = new JTextFieldDriver(this,
+				JTextField.class, named(name));
+		textFieldDriver.focusWithMouse();
+		return textFieldDriver;
 	}
 
 	@SuppressWarnings("unchecked")

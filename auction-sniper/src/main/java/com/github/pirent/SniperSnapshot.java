@@ -8,22 +8,22 @@ package com.github.pirent;
  */
 public class SniperSnapshot {
 
-	private final String itemId;
+	private final Item item;
 	private final int lastPrice;
 	private final int lastBid;
 	private final SniperState sniperState;
 
-	public SniperSnapshot(String itemId, int lastPrice, int lastBid,
+	public SniperSnapshot(Item item, int lastPrice, int lastBid,
 			SniperState sniperState) {
 		super();
-		this.itemId = itemId;
+		this.item = item;
 		this.lastPrice = lastPrice;
 		this.lastBid = lastBid;
 		this.sniperState = sniperState;
 	}
 
-	public String getItemId() {
-		return itemId;
+	public Item getItem() {
+		return item;
 	}
 
 	public SniperState getSniperState() {
@@ -42,7 +42,7 @@ public class SniperSnapshot {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
+		result = prime * result + ((item == null) ? 0 : item.hashCode());
 		result = prime * result + lastBid;
 		result = prime * result + lastPrice;
 		result = prime * result
@@ -59,11 +59,11 @@ public class SniperSnapshot {
 		if (getClass() != obj.getClass())
 			return false;
 		SniperSnapshot other = (SniperSnapshot) obj;
-		if (itemId == null) {
-			if (other.itemId != null)
+		if (item == null) {
+			if (other.item != null)
 				return false;
 		}
-		else if (!itemId.equals(other.itemId))
+		else if (!item.equals(other.item))
 			return false;
 		if (lastBid != other.lastBid)
 			return false;
@@ -76,26 +76,31 @@ public class SniperSnapshot {
 
 	@Override
 	public String toString() {
-		return "SniperSnapshot [itemId=" + itemId + ", lastPrice=" + lastPrice
+		return "SniperSnapshot [item=" + item + ", lastPrice=" + lastPrice
 				+ ", lastBid=" + lastBid + ", sniperState=" + sniperState + "]";
 	}
 
-	public static SniperSnapshot joining(String itemId) {
-		return new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+	public static SniperSnapshot joining(Item item) {
+		return new SniperSnapshot(item, 0, 0, SniperState.JOINING);
 	}
 
 	public SniperSnapshot winning(int newLastPrice) {
-		return new SniperSnapshot(itemId, newLastPrice, lastBid,
+		return new SniperSnapshot(item, newLastPrice, lastBid,
 				SniperState.WINNING);
 	}
 
 	public SniperSnapshot bidding(int newLastPrice, int newLastBid) {
-		return new SniperSnapshot(itemId, newLastPrice, newLastBid,
+		return new SniperSnapshot(item, newLastPrice, newLastBid,
 				SniperState.BIDDING);
+	}
+	
+	public SniperSnapshot losing(int newLastPrice) {
+		return new SniperSnapshot(item, newLastPrice, lastBid, SniperState.LOSING);
 	}
 
 	public SniperSnapshot closed() {
-		return new SniperSnapshot(itemId, lastPrice, lastBid, sniperState.whenAuctionClosed());
+		return new SniperSnapshot(item, lastPrice, lastBid,
+				sniperState.whenAuctionClosed());
 	}
 
 	/**
@@ -104,6 +109,6 @@ public class SniperSnapshot {
 	 * @return
 	 */
 	public boolean isForSameItemAs(SniperSnapshot otherSnapshot) {
-		return this.itemId.equals(otherSnapshot.getItemId());
+		return this.item.equals(otherSnapshot.getItem());
 	}
 }

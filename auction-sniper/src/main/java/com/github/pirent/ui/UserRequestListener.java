@@ -3,9 +3,11 @@ package com.github.pirent.ui;
 import java.awt.event.ActionListener;
 import java.util.EventListener;
 
+import com.github.pirent.Item;
+
 /**
  * <p>In order to convert {@link ActionListener} event, which is internal
- * to the user interface framework, to a this event, which is about users
+ * to the user interface framework, to this event, which is about users
  * interacting with an auction.</p>
  * 
  * <p>These are two separate domains and {@link MainWindow}'s job is to
@@ -18,6 +20,6 @@ import java.util.EventListener;
  */
 public interface UserRequestListener extends EventListener {
 
-	void joinAuction(String itemId);
+	void joinAuction(Item item);
 	
 }
