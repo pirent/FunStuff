@@ -1,14 +1,19 @@
-package com.github.pirent;
+package com.github.pirent.xmpp;
 
 import static com.github.pirent.AuctionEventListener.PriceSource.FROM_OTHER_SNIPPER;
 import static com.github.pirent.AuctionEventListener.PriceSource.FROM_SNIPER;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
+
+import com.github.pirent.AuctionEventListener;
+import com.github.pirent.MissingValueException;
+import com.github.pirent.AuctionEventListener.PriceSource;
 
 /**
  * When it receives a raw message from the auction, translates it into something
@@ -22,18 +27,34 @@ public class AuctionMessageTranslator implements MessageListener {
 
 	private static final String EVENT_CLOSE_TYPE = "CLOSE";
 	private static final String EVENT_PRICE_TYPE = "PRICE";
+	private static final Logger LOGGER = Logger.getLogger(AuctionMessageTranslator.class.getSimpleName());
 	
 	private final String snipperId;
 	private final AuctionEventListener listener;
+	private final XMPPFailureReporter failureReporter;
 	
-	public AuctionMessageTranslator(String snipperId, AuctionEventListener listener) {
+	public AuctionMessageTranslator(String snipperId,
+			AuctionEventListener listener, XMPPFailureReporter failureReporter) {
 		this.snipperId = snipperId;
 		this.listener = listener;
+		this.failureReporter = failureReporter;
 	}
 
 	@Override
 	public void processMessage(Chat chat, Message message) {
-		AuctionEvent event = AuctionEvent.from(message.getBody());
+		String messageBody = message.getBody();
+		try {
+			translate(messageBody);
+		}
+		catch (RuntimeException parseException) {
+			failureReporter.cannotTranslateMessage(snipperId, messageBody, parseException);
+			listener.auctionFailed();
+		}
+	}
+	
+	private void translate(String messageBody) {
+		LOGGER.info("Receive auction event: " + messageBody);
+		AuctionEvent event = AuctionEvent.from(messageBody);
 		
 		// Delegate the handling of an interpreted event to a collaborator
 		String type = event.type();
@@ -45,7 +66,7 @@ public class AuctionMessageTranslator implements MessageListener {
 					event.isFrom(snipperId));
 		}
 	}
-	
+
 	private static class AuctionEvent {
 		
 		private final Map<String, String> fields = new HashMap<String, String>();
@@ -85,7 +106,11 @@ public class AuctionMessageTranslator implements MessageListener {
 		}
 
 		private String get(String fieldName) {
-			return fields.get(fieldName);
+			String value = fields.get(fieldName);
+			if (null == value) {
+				throw new MissingValueException(fieldName);
+			}
+			return value;
 		}
 		
 		private int getInt(String fieldName) {

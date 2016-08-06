@@ -10,11 +10,12 @@ import org.jivesoftware.smack.XMPPException;
 
 import com.github.pirent.Auction;
 import com.github.pirent.AuctionEventListener;
-import com.github.pirent.AuctionMessageTranslator;
-import com.github.pirent.Main;
 import com.github.pirent.util.Announcer;
 
 public class XMPPAuction implements Auction {
+	
+	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
+	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Event: BID; Price: %d";
 	
 	private static final String AUCTION_RESOURCE = "Auction";
 	private static final String ITEM_ID_AS_LOGIN = "auction-item-%s";
@@ -22,37 +23,62 @@ public class XMPPAuction implements Auction {
 			+ AUCTION_RESOURCE;
 
 	private static final Logger LOGGER = Logger.getLogger(XMPPAuction.class.getSimpleName());
+	private static final Logger CHAT_DISCONNECTOR_LOGGER = Logger.getLogger("Chat Disconnector");
 	
 	private final Announcer<AuctionEventListener> auctionEventListeners = Announcer
 			.to(AuctionEventListener.class);
 	private final Chat chat;
 	
-	public XMPPAuction(XMPPConnection connection, String itemId) {
+	public XMPPAuction(XMPPConnection connection, String itemId, XMPPFailureReporter failureReporter) {
+		AuctionMessageTranslator translator = translatorFor(connection, failureReporter);
 		this.chat = connection.getChatManager().createChat(
-				auctionId(itemId, connection),
-				new AuctionMessageTranslator(connection.getUser(),
-						auctionEventListeners.announce()));
+				auctionId(itemId, connection), translator);
+		addAuctionEventListener(chatDisconnectorFor(translator));
 	}
 	
+	private AuctionMessageTranslator translatorFor(XMPPConnection connection,
+			XMPPFailureReporter failureReporter) {
+		return new AuctionMessageTranslator(connection.getUser(),
+				auctionEventListeners.announce(), failureReporter);
+	}
+
 	private static String auctionId(String itemId, XMPPConnection connection) {
 		return String.format(AUCTION_ID_FORMAT, itemId,
 				connection.getServiceName());
 	}
+	
+	private AuctionEventListener chatDisconnectorFor(
+			final AuctionMessageTranslator translator) {
+		return new AuctionEventListener() {
+			
+			@Override
+			public void currentPrice(int i, int j, PriceSource priceSource) {}
+			
+			@Override
+			public void auctionFailed() {
+				CHAT_DISCONNECTOR_LOGGER.info("Disconnect translator for " + chat.getParticipant());
+				chat.removeMessageListener(translator);
+			}
+			
+			@Override
+			public void auctionClosed() {}
+		};
+	}
 
 	@Override
 	public void bid(int amount) {
-		sendMessage(format(Main.BID_COMMAND_FORMAT, amount));
+		sendMessage(format(BID_COMMAND_FORMAT, amount));
 	}
 	
 	@Override
 	public void join() {
-		sendMessage(Main.JOIN_COMMAND_FORMAT);
+		sendMessage(JOIN_COMMAND_FORMAT);
 	}
 
 	private void sendMessage(String message) {
 		try {
 			chat.sendMessage(message);
-			LOGGER.info(chat.getParticipant() + " send message: " + message);
+			LOGGER.info(chat.getParticipant() + " send command: " + message);
 		}
 		catch (XMPPException e) {
 			e.printStackTrace();
@@ -60,8 +86,9 @@ public class XMPPAuction implements Auction {
 	}
 
 	@Override
-	public void addAuctionEventListener(AuctionEventListener auctionSniper) {
-		auctionEventListeners.addListener(auctionSniper);
+	public void addAuctionEventListener(
+			AuctionEventListener auctionEventListener) {
+		auctionEventListeners.addListener(auctionEventListener);
 	}
 	
 }

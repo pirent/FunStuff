@@ -131,6 +131,15 @@ public class AuctionSniperTest {
 				new SniperSnapshot(ITEM, 2345, bid, SniperState.LOSING));
 	}
 	
+	@Test
+	public void reportsFailedIfAuctionFailsWhenBidding() {
+		sniper.currentPrice(123, 45, PriceSource.FROM_OTHER_SNIPPER);
+		sniper.auctionFailed();
+		
+		verify(sniperListener).sniperStateChanged(
+				new SniperSnapshot(ITEM, 0, 0, SniperState.FAILED));
+	}
+	
 	/**
 	 * Create a {@link Matcher} to check that a {@link SniperSnapshot}
 	 * has its state match with the provided one.

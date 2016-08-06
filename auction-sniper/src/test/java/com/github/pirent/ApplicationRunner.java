@@ -3,6 +3,12 @@ package com.github.pirent;
 import static com.github.pirent.auctionsniper.SniperState.JOINING;
 import static com.github.pirent.ui.SnipersTableModel.textFor;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.text.StringContainsInOrder;
+
 import com.github.pirent.auctionsniper.SniperState;
 import com.github.pirent.mock.FakeAuctionServer;
 import com.github.pirent.ui.MainWindow;
@@ -37,6 +43,7 @@ public class ApplicationRunner {
 	private static final int NO_STOP_PRICE = Integer.MAX_VALUE;
 		
 	private AuctionSniperDriver driver;
+	private final AuctionLogDriver logDriver = new AuctionLogDriver();
 	
 	public void startBiddingIn(final FakeAuctionServer... auctions) {
 		startSniper(auctions);
@@ -51,17 +58,9 @@ public class ApplicationRunner {
 		startBiddingFor(auction, stopPrice);
 	}
 	
-	private void startBiddingFor(FakeAuctionServer auction, int stopPrice) {
-		String itemId = auction.getItemId();
-		driver.startBiddingFor(itemId, stopPrice);
-		
-		// Wait for the status to change to Joining
-		// This assertion says that somewhere in the user interface. there is a label
-		// that describes the Sniper's state
-		driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
-	}
-	
 	private void startSniper(final FakeAuctionServer... auctions) {
+		logDriver.clearLog();
+		
 		// WindowLicker can control Swing components if they're in the same JVM
 		// so we start the Sniper in the new thread
 		Thread thread = new Thread("Test Application") {
@@ -89,6 +88,16 @@ public class ApplicationRunner {
 		
 		driver.hasTitle(MainWindow.APPLICATION_TITLE);
 		driver.hasColumnTitles();
+	}
+	
+	private void startBiddingFor(FakeAuctionServer auction, int stopPrice) {
+		String itemId = auction.getItemId();
+		driver.startBiddingFor(itemId, stopPrice);
+		
+		// Wait for the status to change to Joining
+		// This assertion says that somewhere in the user interface. there is a label
+		// that describes the Sniper's state
+		driver.showSniperStatus(auction.getItemId(), 0, 0, textFor(JOINING));
 	}
 
 	protected static String[] arguments(FakeAuctionServer[] auctions) {
@@ -133,6 +142,29 @@ public class ApplicationRunner {
 	public void showsSniperHasWonAuction(FakeAuctionServer auction, int lastPrice) {
 		driver.showSniperStatus(auction.getItemId(), lastPrice, lastPrice,
 				SnipersTableModel.textFor(SniperState.WON));
+	}
+
+	/**
+	 * Check that the status of the item is 'Failed' and that the price values
+	 * have been zeroed.
+	 * 
+	 * @param auction
+	 */
+	public void showsSniperHasFailed(FakeAuctionServer auction) {
+		driver.showSniperStatus(auction.getItemId(), 0, 0,
+				SnipersTableModel.textFor(SniperState.FAILED));
+	}
+
+	public void reportsInvalidMessage(FakeAuctionServer auction,
+			String brokenMessage) throws IOException {
+		logDriver.hasEntry(containsString(brokenMessage));
+	}
+
+	private Matcher<String> containsString(String message) {
+		Matcher<String> matcher = StringContainsInOrder.stringContainsInOrder(Arrays.asList(
+				"LoggingXMPPFailureReporter", "Could not translate message",
+				message));
+		return matcher;
 	}
 
 }

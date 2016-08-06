@@ -104,6 +104,10 @@ public class SniperSnapshot {
 		return new SniperSnapshot(item, lastPrice, lastBid,
 				sniperState.whenAuctionClosed());
 	}
+	
+	public SniperSnapshot failed() {
+		return new SniperSnapshot(item, 0, 0, SniperState.FAILED);
+	}
 
 	/**
 	 * Deciding whether it's referring to the same item via identifier

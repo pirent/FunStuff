@@ -11,5 +11,7 @@ public interface AuctionEventListener extends EventListener {
 	public void auctionClosed();
 
 	public void currentPrice(int i, int j, PriceSource priceSource);
+	
+	public void auctionFailed();
 
 }

@@ -1,5 +1,7 @@
 package com.github.pirent.mock;
 
+import static com.github.pirent.xmpp.XMPPAuction.BID_COMMAND_FORMAT;
+import static com.github.pirent.xmpp.XMPPAuction.JOIN_COMMAND_FORMAT;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -8,8 +10,6 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-
-import com.github.pirent.Main;
 
 /**
  * <p>A stub server that allows test to check how the Auction Sniper
@@ -72,7 +72,7 @@ public class FakeAuctionServer {
 	 * @throws InterruptedException
 	 */
 	public void hasReceivedJoinRequestFromSniper(String sniperId) throws InterruptedException {
-		receiveAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT));
+		receiveAMessageMatching(sniperId, equalTo(JOIN_COMMAND_FORMAT));
 	}
 
 	public void announceClosed() throws XMPPException {
@@ -97,7 +97,7 @@ public class FakeAuctionServer {
 
 	public void hasReceiveBid(int bid, String sniperId) throws InterruptedException {
 		receiveAMessageMatching(sniperId,
-				equalTo(String.format(Main.BID_COMMAND_FORMAT, bid)));
+				equalTo(String.format(BID_COMMAND_FORMAT, bid)));
 	}
 	
 	private void receiveAMessageMatching(String sniperId,
@@ -109,6 +109,10 @@ public class FakeAuctionServer {
 		// it must have accepted the connection and set up currentChat
 		assertThat("Current chat's participant should match sniper",
 				currentChat.getParticipant(), equalTo(sniperId));
+	}
+
+	public void sendInvalidMessageContaining(String brokenMessage) throws XMPPException {
+		currentChat.sendMessage(brokenMessage);
 	}
 
 }
